@@ -21,7 +21,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
-import ActiveLink from './active.link';
+import SignUp from '../auth/signup';
 
 
 // styled - component
@@ -72,6 +72,24 @@ export default function AppHeader() {
 
     const router = useRouter()
 
+    const [isOpenSignUp, setIsOpenSignUp] = React.useState(false)
+    const [isOpenLogin, setIsOpenLogin] = React.useState(false)
+
+    const handleClickOpenSignUp = () => {
+        setIsOpenSignUp(true);
+    };
+    const handleCloseSignUp = () => {
+        setIsOpenSignUp(false);
+    };
+
+    const handleClickOpenLogin = () => {
+        setIsOpenLogin(true);
+    };
+    const handleCloseLogin = () => {
+        setIsOpenLogin(false);
+    };
+
+
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
         React.useState<null | HTMLElement>(null);
@@ -114,7 +132,7 @@ export default function AppHeader() {
                         color: "unset",
                         textDecoration: "unset"
                     }}
-                >Profile</Link>
+                >My Account</Link>
             </MenuItem>
             <MenuItem onClick={() => {
                 handleMenuClose();
@@ -199,7 +217,7 @@ export default function AppHeader() {
                             }}
                             onClick={() => handleRedirectHome()}
                         >
-                            SoundCloud
+                            Regal
                         </Typography>
                         <Search>
                             <SearchIconWrapper>
@@ -234,26 +252,24 @@ export default function AppHeader() {
                             }
                         }}>
                             {
-                                session ? <>
-                                    <ActiveLink href={"/playlist"}>Playlists</ActiveLink>
-                                    <ActiveLink href={"/like"}>Likes</ActiveLink>
-                                    <ActiveLink href={"/track/upload"}>Upload</ActiveLink>
-
-                                    <Image
-                                        src={fetchDefaultImages(session.user.type)}
-                                        onClick={handleProfileMenuOpen}
-                                        height={35}
-                                        width={35}
-                                        alt='avatar'
-                                    />
-                                </> :
+                                session ?
                                     <>
+                                        <Image
+                                            src={fetchDefaultImages(session.user.type)}
+                                            onClick={handleProfileMenuOpen}
+                                            height={35}
+                                            width={35}
+                                            alt='avatar'
+                                        />
+                                    </> :
+                                    <>
+                                        <SignUp />
                                         <Link href={"/auth/signin"}
                                         > Login
                                         </Link>
+
                                     </>
                             }
-
 
                         </Box>
                         <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
