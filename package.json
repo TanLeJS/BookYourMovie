@@ -17,6 +17,7 @@
     "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^5.14.7",
     "@mui/material": "^5.14.7",
+    "dayjs": "^1.11.11",
     "next": "13.4.19",
     "next-auth": "^4.24.7",
     "next-nprogress-bar": "^2.3.11",

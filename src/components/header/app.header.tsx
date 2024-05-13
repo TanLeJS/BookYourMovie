@@ -5,7 +5,7 @@ import MailIcon from '@mui/icons-material/Mail';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import SearchIcon from '@mui/icons-material/Search';
-import { Container } from '@mui/material';
+import { Button, Container } from '@mui/material';
 import AppBar from '@mui/material/AppBar';
 import Badge from '@mui/material/Badge';
 import Box from '@mui/material/Box';
@@ -264,9 +264,9 @@ export default function AppHeader() {
                                     </> :
                                     <>
                                         <SignUp />
-                                        <Link href={"/auth/signin"}
-                                        > Login
-                                        </Link>
+                                        <Button onClick={() => router.push("/auth/signin")}>
+                                            Login
+                                        </Button>
 
                                     </>
                             }
