@@ -5,7 +5,7 @@ import MailIcon from '@mui/icons-material/Mail';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import SearchIcon from '@mui/icons-material/Search';
-import { Button, Container } from '@mui/material';
+import { Container } from '@mui/material';
 import AppBar from '@mui/material/AppBar';
 import Badge from '@mui/material/Badge';
 import Box from '@mui/material/Box';
@@ -21,6 +21,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
+import AuthSignIn from '../auth/auth.signin';
 import SignUp from '../auth/signup';
 
 
@@ -73,22 +74,7 @@ export default function AppHeader() {
     const router = useRouter()
 
     const [isOpenSignUp, setIsOpenSignUp] = React.useState(false)
-    const [isOpenLogin, setIsOpenLogin] = React.useState(false)
-
-    const handleClickOpenSignUp = () => {
-        setIsOpenSignUp(true);
-    };
-    const handleCloseSignUp = () => {
-        setIsOpenSignUp(false);
-    };
-
-    const handleClickOpenLogin = () => {
-        setIsOpenLogin(true);
-    };
-    const handleCloseLogin = () => {
-        setIsOpenLogin(false);
-    };
-
+    const [isOpenSignIn, setIsOpenSignIn] = React.useState(false)
 
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
@@ -263,11 +249,15 @@ export default function AppHeader() {
                                         />
                                     </> :
                                     <>
-                                        <SignUp />
-                                        <Button onClick={() => router.push("/auth/signin")}>
-                                            Login
-                                        </Button>
-
+                                        <SignUp
+                                            isOpenSignUp={isOpenSignUp}
+                                            setIsOpenSignUp={setIsOpenSignUp}
+                                        />
+                                        <AuthSignIn
+                                            setIsOpenSignUp={setIsOpenSignUp}
+                                            isOpenSignIn={isOpenSignIn}
+                                            setIsOpenSignIn={setIsOpenSignIn}
+                                        />
                                     </>
                             }
 

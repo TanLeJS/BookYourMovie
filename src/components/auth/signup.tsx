@@ -14,19 +14,24 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
 
-export default function SignUp() {
-    const [open, setOpen] = React.useState(false);
+interface SignUpProps {
+    isOpenSignUp: boolean;
+    setIsOpenSignUp: (isOpenSignUp: boolean) => void;
+}
+
+const SignUp = (props: SignUpProps) => {
+    const { isOpenSignUp, setIsOpenSignUp } = props
     const [showPassword, setShowPassword] = React.useState<boolean>(false)
     const [showConfirmedPassword, setShowConfirmedPassword] = React.useState<boolean>(false)
 
-    const [username, setUsername] = React.useState<string>("")
+    const [email, setEmail] = React.useState<string>("")
     const [password, setPassword] = React.useState<string>("")
     const [confirmedPassword, setConfirmedPassword] = React.useState("")
 
-    const [isErrorUsername, setIsErrorUsername] = React.useState<boolean>(false)
+    const [isErrorEmail, setIsErrorEmail] = React.useState<boolean>(false)
     const [isErrorPassword, setIsErrorPassword] = React.useState<boolean>(false)
 
-    const [errorUsername, setErrorUsername] = React.useState<string>("")
+    const [errorEmail, setErrorEmail] = React.useState<string>("")
     const [errorPassword, setErrorPassword] = React.useState<string>("")
 
     const [isErrorConfirmedPassword, setIsErrorConfirmedPassword] = React.useState<boolean>(false)
@@ -39,15 +44,10 @@ export default function SignUp() {
     const router = useRouter();
     const { data: session } = useSession();
 
-    const handleClose = (event: any, reason: any) => {
-        if (reason && reason == "backdropClick")
-            return;
-        setOpen(false);
-    };
 
     const handleSubmit = async () => {
-        if (!username) {
-            toast.error("Username is empty")
+        if (!email) {
+            toast.error("Email is empty")
             return;
         }
 
@@ -68,13 +68,13 @@ export default function SignUp() {
         const res = await sendRequest<IBackendRes<any>>({
             url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/playlists/empty`,
             method: "POST",
-            body: { username, password },
+            body: { email, password },
         })
 
         if (res.data) {
             toast.success("Create a playlist successfully")
-            setOpen(false)
-            setUsername("")
+            setIsOpenSignUp(false)
+            setEmail("")
             setPassword("")
             await sendRequest<IBackendRes<any>>({
                 url: `/api/revalidate`,
@@ -93,24 +93,24 @@ export default function SignUp() {
 
     return (
         <div>
-            <Button onClick={() => setOpen(true)}>
+            <Button onClick={() => setIsOpenSignUp(true)}>
                 Sign Up
             </Button>
-            <Dialog open={open} onClose={handleClose} maxWidth={"sm"} fullWidth>
+            <Dialog open={isOpenSignUp} onClose={() => setIsOpenSignUp(false)} maxWidth={"sm"} fullWidth>
                 <DialogTitle>Create a new account</DialogTitle>
                 <DialogContent>
                     <Box sx={{ display: "flex", gap: "5px", flexDirection: "column", width: "100%" }}>
                         <TextField
-                            onChange={(event) => setUsername(event.target.value)}
+                            onChange={(event) => setEmail(event.target.value)}
                             variant='outlined'
                             margin='normal'
                             required
                             fullWidth
-                            label="Username"
-                            name="username"
+                            label="Email"
+                            name="Email"
                             autoFocus
-                            error={isErrorUsername}
-                            helperText={errorUsername}
+                            error={isErrorEmail}
+                            helperText={errorEmail}
                         />
                         <TextField
                             onChange={(event) => setPassword(event.target.value)}
@@ -175,15 +175,17 @@ export default function SignUp() {
                     </Box>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => setOpen(false)}>Close</Button>
+                    <Button onClick={() => setIsOpenSignUp(false)}>Close</Button>
                     <Button
                         onClick={() => handleSubmit()}
                         disabled={!isAgree}
                     >
-                        Save
+                        Submit
                     </Button>
                 </DialogActions>
             </Dialog>
         </div>
     );
 }
+
+export default SignUp
