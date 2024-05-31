@@ -19,9 +19,12 @@ interface SignInProps {
 const AuthSignIn = (props: SignInProps) => {
     const { isOpenSignIn, setIsOpenSignIn, setIsOpenSignUp } = props;
     const router = useRouter()
+
     const [showPassword, setShowPassword] = useState<boolean>(false)
+
     const [email, setEmail] = useState<string>("")
     const [password, setPassword] = useState<string>("")
+
 
     const [isErrorEmail, setIsErrorEmail] = useState<boolean>(false)
     const [isErrorPassword, setIsErrorPassword] = useState<boolean>(false)
@@ -65,156 +68,6 @@ const AuthSignIn = (props: SignInProps) => {
 
 
     return (
-        // <div>
-        //     <Button onClick={() => setIsOpenSignIn(true)}>Sign In</Button>
-        //     <Dialog
-        //         open={isOpenSignIn}
-        //         onClose={() => setIsOpenSignIn(false)}
-        //         aria-labelledby="modal-modal-title"
-        //         aria-describedby="modal-modal-description"
-        //         maxWidth={"sm"}
-        //         fullWidth
-        //     >
-        //         <Box>
-        //             <Grid container sx={
-        //                 {
-        //                     display: "flex",
-        //                     alignItems: "center",
-        //                     justifyContent: "center",
-        //                     height: "100vh"
-        //                 }
-        //             }>
-        //                 <Grid
-        //                     item
-        //                     xs={12}
-        //                     sm={8}
-        //                     md={5}
-        //                     lg={4}
-        //                     sx={{
-        //                         boxShadow: "rgba(100,100,111,0.2) 0px 7px 29px 0px"
-        //                     }}
-        //                 >
-        //                     <div style={{ margin: "20px" }}>
-        //                         <Link href="/">
-        //                             <ArrowBackIcon />
-        //                         </Link>
-
-        //                         <Box sx={{
-        //                             display: "flex",
-        //                             justifyContent: "center",
-        //                             alignItems: "center",
-        //                             flexDirection: "column",
-        //                             width: "100%"
-        //                         }}>
-        //                             <Avatar>
-        //                                 <LockIcon />
-        //                             </Avatar>
-        //                             <Typography component="h1">
-        //                                 Sign In
-        //                             </Typography>
-        //                         </Box>
-        //                         <TextField
-        //                             onChange={(event) => setUsername(event.target.value)}
-        //                             variant='outlined'
-        //                             margin='normal'
-        //                             required
-        //                             fullWidth
-        //                             label="Username"
-        //                             name="username"
-        //                             autoFocus
-        //                             error={isErrorUsername}
-        //                             helperText={errorUsername}
-        //                         />
-        //                         <TextField
-        //                             onChange={(event) => setPassword(event.target.value)}
-        //                             onKeyDown={(e) => {
-        //                                 if (e.key === "Enter") {
-        //                                     handleSubmit()
-        //                                 }
-        //                             }}
-        //                             variant='outlined'
-        //                             margin='normal'
-        //                             required
-        //                             fullWidth
-        //                             label="Password"
-        //                             name="password"
-        //                             type={showPassword ? "text" : "password"}
-        //                             error={isErrorPassword}
-        //                             helperText={errorPassword}
-
-        //                             InputProps={{
-        //                                 endAdornment: <InputAdornment position='end'>
-        //                                     <IconButton onClick={() => setShowPassword(!showPassword)}>
-        //                                         {showPassword === false ? <VisibilityOff /> : <Visibility />}
-        //                                     </IconButton>
-
-        //                                 </InputAdornment>
-        //                             }}
-        //                         />
-        //                         <Button
-        //                             sx={{
-        //                                 my: 3
-        //                             }}
-        //                             type='submit'
-        //                             fullWidth
-        //                             variant='contained'
-        //                             color='primary'
-        //                             onClick={handleSubmit}
-        //                         >
-        //                             Sign In
-        //                         </Button>
-        //                         <Divider>Or Using</Divider>
-        //                         <Box
-        //                             sx={{
-        //                                 display: "flex",
-        //                                 justifyContent: "center",
-        //                                 gap: "25px",
-        //                                 mt: 3
-        //                             }}
-        //                         >
-        //                             <Avatar
-        //                                 sx={{
-        //                                     cursor: "pointer",
-        //                                     bgcolor: "orange"
-        //                                 }}
-        //                                 onClick={() => {
-        //                                     signIn("github")
-        //                                 }}
-        //                             >
-
-        //                                 <GitHubIcon titleAccess='Login with Github' />
-        //                             </Avatar>
-        //                             <Avatar
-        //                                 sx={{
-        //                                     cursor: "pointer",
-        //                                     bgcolor: "orange"
-        //                                 }}
-        //                                 onClick={() => {
-        //                                     signIn("google")
-        //                                 }}
-        //                             >
-        //                                 <GoogleIcon titleAccess='Login with Google' />
-        //                             </Avatar>
-        //                         </Box>
-        //                     </div>
-
-        //                 </Grid>
-        //             </Grid>
-        //         </Box>
-        //         <Snackbar
-        //             open={openMessage}
-        //             anchorOrigin={{ vertical: "top", horizontal: "center" }}
-        //         >
-        //             <Alert
-        //                 onClose={() => setOpenMessage(false)}
-        //                 severity="error"
-        //                 sx={{ width: '100%' }}
-        //             >
-        //                 {resMessage}
-        //             </Alert>
-        //         </Snackbar>
-        //     </Dialog>
-        // </div>
         <div>
             <Button onClick={() => setIsOpenSignIn(true)}>
                 Sign In
@@ -323,7 +176,19 @@ const AuthSignIn = (props: SignInProps) => {
                         </Box>
                     </Box>
                 </DialogContent>
-            </Dialog>
+                {/* <Snackbar
+                    open={openMessage}
+                    anchorOrigin={{ vertical: "top", horizontal: "center" }}
+                >
+                    <Alert
+                        onClose={() => setOpenMessage(false)}
+                        severity="error"
+                        sx={{ width: '100%' }}
+                    >
+                        {resMessage}
+                    </Alert>
+                </Snackbar> */}
+            </Dialog >
         </div >
     )
 }

@@ -27,6 +27,8 @@ const SignUp = (props: SignUpProps) => {
     const [email, setEmail] = React.useState<string>("")
     const [password, setPassword] = React.useState<string>("")
     const [confirmedPassword, setConfirmedPassword] = React.useState("")
+    const [name, setName] = React.useState("")
+    const [phone, setPhone] = React.useState("")
 
     const [isErrorEmail, setIsErrorEmail] = React.useState<boolean>(false)
     const [isErrorPassword, setIsErrorPassword] = React.useState<boolean>(false)
@@ -38,7 +40,6 @@ const SignUp = (props: SignUpProps) => {
     const [errorConfirmedPassword, setErrorConfirmedPassword] = React.useState<string>("")
 
     const [isAgree, setIsAgree] = React.useState(true);
-
 
     const toast = useToast();
     const router = useRouter();
@@ -99,6 +100,32 @@ const SignUp = (props: SignUpProps) => {
             <Dialog open={isOpenSignUp} onClose={() => setIsOpenSignUp(false)} maxWidth={"sm"} fullWidth>
                 <DialogTitle>Create a new account</DialogTitle>
                 <DialogContent>
+                    <Box sx={{ display: "flex", gap: "20px", flexDirection: "row", width: "100%", justifyContent: "space-between" }}>
+                        <TextField
+                            onChange={(event) => setName(event.target.value)}
+                            variant='outlined'
+                            margin='normal'
+                            required
+                            label="Name"
+                            name="name"
+                            autoFocus
+                            fullWidth
+                            sx={{
+                                gap: "10px"
+                            }}
+                        />
+                        <TextField
+                            onChange={(event) => setPhone(event.target.value)}
+                            variant='outlined'
+                            margin='normal'
+                            required
+                            label="Phone"
+                            name="phone"
+                            autoFocus
+                            fullWidth
+                        />
+
+                    </Box>
                     <Box sx={{ display: "flex", gap: "5px", flexDirection: "column", width: "100%" }}>
                         <TextField
                             onChange={(event) => setEmail(event.target.value)}
