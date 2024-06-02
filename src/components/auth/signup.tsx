@@ -47,6 +47,16 @@ const SignUp = (props: SignUpProps) => {
 
 
     const handleSubmit = async () => {
+        if (!name) {
+            toast.error("Name is empty")
+            return;
+        }
+
+        if (!phone) {
+            toast.error("Phone number is empty");
+        }
+
+
         if (!email) {
             toast.error("Email is empty")
             return;
@@ -67,9 +77,9 @@ const SignUp = (props: SignUpProps) => {
         }
 
         const res = await sendRequest<IBackendRes<any>>({
-            url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/playlists/empty`,
+            url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/auth/register`,
             method: "POST",
-            body: { email, password },
+            body: { email, password, name, phone },
         })
 
         if (res.data) {

@@ -52,7 +52,7 @@ const AuthSignIn = (props: SignInProps) => {
             return
         }
         const res = await signIn("credentials", {
-            email: email,
+            username: email,
             password: password,
             redirect: false
         })

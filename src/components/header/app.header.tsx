@@ -71,6 +71,8 @@ export default function AppHeader() {
 
     const { data: session } = useSession()
 
+    console.log(session)
+
     const router = useRouter()
 
     const [isOpenSignUp, setIsOpenSignUp] = React.useState(false)
