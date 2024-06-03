@@ -10,7 +10,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import TextField from '@mui/material/TextField';
-import { useSession } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
 
@@ -91,9 +91,14 @@ const SignUp = (props: SignUpProps) => {
                 url: `/api/revalidate`,
                 method: "POST",
                 queryParams: {
-                    tag: "playlist-by-user",
+                    tag: "sign-up",
                     secret: "justArandomString"
                 }
+            })
+            await signIn("credentials", {
+                username: email,
+                password: password,
+                redirect: false
             })
             router.refresh();
         }

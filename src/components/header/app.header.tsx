@@ -70,9 +70,6 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 export default function AppHeader() {
 
     const { data: session } = useSession()
-
-    console.log(session)
-
     const router = useRouter()
 
     const [isOpenSignUp, setIsOpenSignUp] = React.useState(false)
@@ -120,7 +117,8 @@ export default function AppHeader() {
                         color: "unset",
                         textDecoration: "unset"
                     }}
-                >My Account</Link>
+                >My Account
+                </Link>
             </MenuItem>
             <MenuItem onClick={() => {
                 handleMenuClose();

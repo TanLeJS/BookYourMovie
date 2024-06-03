@@ -2,7 +2,7 @@
 
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import GoogleIcon from '@mui/icons-material/Google';
-import { Box, Button, Dialog, Divider, IconButton, InputAdornment, Link, TextField, Typography } from "@mui/material";
+import { Alert, Box, Button, Dialog, Divider, IconButton, InputAdornment, Link, Snackbar, TextField, Typography } from "@mui/material";
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import { signIn } from 'next-auth/react';
@@ -176,7 +176,7 @@ const AuthSignIn = (props: SignInProps) => {
                         </Box>
                     </Box>
                 </DialogContent>
-                {/* <Snackbar
+                <Snackbar
                     open={openMessage}
                     anchorOrigin={{ vertical: "top", horizontal: "center" }}
                 >
@@ -187,7 +187,7 @@ const AuthSignIn = (props: SignInProps) => {
                     >
                         {resMessage}
                     </Alert>
-                </Snackbar> */}
+                </Snackbar>
             </Dialog >
         </div >
     )

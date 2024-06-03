@@ -78,15 +78,17 @@ export const authOptions: AuthOptions = {
   ],
   callbacks: {
     async jwt({ token, user, account, profile, trigger }) {
-      if (trigger === "signIn" && account?.provider !== "credentials") {
+      if (trigger === "signIn" && account?.provider === "google") {
         const res = await sendRequest<IBackendRes<JWT>>({
-          url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/auth/social-media`,
+          url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/auth/google`,
           method: "POST",
           body: {
             type: account?.provider?.toLocaleUpperCase(),
-            username: user.email,
+            email: user.email,
+            name: user.name,
           },
         });
+        console.log(res);
         if (res.data) {
           token.access_token = res.data?.access_token;
           token.refresh_token = res.data.refresh_token;
