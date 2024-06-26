@@ -66,7 +66,6 @@ const AuthSignIn = (props: SignInProps) => {
     }
 
 
-
     return (
         <div>
             <Button onClick={() => setIsOpenSignIn(true)}>
