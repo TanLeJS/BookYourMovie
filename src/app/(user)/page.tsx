@@ -1,6 +1,6 @@
 import MainSlider from "@/components/main/main.slider";
 import { sendRequest } from "@/utils/api";
-import { Container } from "@mui/material";
+import { Box, Container } from "@mui/material";
 
 export default async function HomePage() {
 
@@ -16,10 +16,12 @@ export default async function HomePage() {
 
   return (
     <Container>
-      <MainSlider
-        title="Now Playing"
-        data={currentPlaying?.data ?? []}
-      />
+      <Box>
+        <MainSlider
+          title="Now Playing"
+          data={currentPlaying?.data ?? []}
+        />
+      </Box>
       <MainSlider
         title="Coming soon"
         data={upComing?.data ?? []}

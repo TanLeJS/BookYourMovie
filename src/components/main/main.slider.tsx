@@ -134,7 +134,7 @@ const MainSlider = (props: IProps) => {
                             <Link href={`/movie/${convertSlugUrl(movie.title)}-${movie._id}`}>
                                 <h4>{movie.title}</h4>
                             </Link>
-                            <h5>{movie.overview}</h5>
+                            <h5>{movie.genres}</h5>
                         </div>
                     )
                 })}
