@@ -96,12 +96,13 @@ const MainSlider = (props: IProps) => {
 
         <Box
             sx={{
+                width: "100%",
                 margin: "0 50px",
-                ".track": {
+                ".movie": {
                     padding: "0 10px",
                     "img": {
-                        height: 150,
-                        width: 150
+                        height: 250,
+                        width: 250,
                     }
                 },
                 "h3": {
@@ -111,36 +112,36 @@ const MainSlider = (props: IProps) => {
                 }
             }}
         >
-            <h2> {title} </h2>
-            <Slider {...settings}>
-                {data.map(movie => {
-                    return (
-                        <div className='track' key={movie._id}>
-                            <div style={{
-                                position: "relative",
-                                height: "150px",
-                                width: "100%"
-                            }}
-                            >
+            <Box>
+                <Box
+                    sx={{
+                        marginRight: "50px"
+                    }}>
+                    <h2 style={{ textAlign: 'center', color: 'white' }}> {title} </h2>
+                </Box>
+                <Slider {...settings}>
+                    {data.map(movie => (
+                        <div className='movie' key={movie._id} style={{ display: 'flex', alignItems: 'flex-start' }}>
+                            <div style={{ position: "relative", height: "225px", width: "150px", marginRight: "20px" }}>
                                 <Image
-                                    alt="Image"
+                                    alt="Movie Poster"
                                     src={`https://image.tmdb.org/t/p/original${movie.poster_path}`}
                                     fill
-                                    style={{
-                                        objectFit: 'contain',
-                                    }}
+                                    style={{ objectFit: 'contain', width: '100%', height: '100%' }}
                                 />
                             </div>
-                            <Link href={`/movie/${convertSlugUrl(movie.title)}-${movie._id}`}>
-                                <h4>{movie.title}</h4>
-                            </Link>
-                            <h5>{movie.genres}</h5>
+                            <div style={{ flex: 1 }}>
+                                <Link href={`/movie/${convertSlugUrl(movie.title)}-${movie._id}`}>
+                                    <h4>{movie.title}</h4>
+                                </Link>
+                                <h5>{movie.genres}</h5>
+                            </div>
                         </div>
-                    )
-                })}
-            </Slider>
+                    ))}
+                </Slider>
+            </Box>
             <Divider />
-        </Box>
+        </Box >
     );
 }
 

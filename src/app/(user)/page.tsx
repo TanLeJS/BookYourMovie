@@ -15,17 +15,46 @@ export default async function HomePage() {
 
 
   return (
-    <Container>
-      <Box>
+    <Box
+      sx={{
+        position: 'relative', // Required for the overlay to position correctly
+        margin: "0",
+        height: 'calc(100vh - 200px)',
+        backgroundImage: 'url(/background/background.jpg)', // Correctly setting the background image
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        padding: "20px",
+        '::before': {
+          content: '""',
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          backgroundColor: 'rgba(0, 0, 0, 0.8)', // Increase opacity to make it darker
+          zIndex: 1, // Make sure the overlay is behind the content
+        },
+        '> *': {
+          position: 'relative',
+          zIndex: 2, // Make sure the content is above the overlay
+        }
+      }}>
+      <Container
+      >
+
         <MainSlider
           title="Now Playing"
           data={currentPlaying?.data ?? []}
         />
-      </Box>
-      <MainSlider
-        title="Coming soon"
-        data={upComing?.data ?? []}
-      />
-    </Container>
+      </Container>
+
+      <Container>
+        <MainSlider
+          title="Coming soon"
+          data={upComing?.data ?? []}
+        />
+      </Container>
+
+    </Box>
   );
 }
