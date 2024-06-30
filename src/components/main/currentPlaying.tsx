@@ -2,8 +2,10 @@
 import { convertSlugUrl } from '@/utils/api';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import StarIcon from '@mui/icons-material/Star';
 import { Box } from "@mui/material";
 import Button from "@mui/material/Button/Button";
+import Divider from '@mui/material/Divider';
 import Image from 'next/image';
 import Link from 'next/link';
 import Slider, { Settings } from "react-slick";
@@ -14,8 +16,18 @@ interface IProps {
     data: IMovieTop[],
 }
 
-const MainSlider = (props: IProps) => {
+const styles = {
+
+    largeIcon: {
+        width: 20,
+        height: 20,
+    },
+
+};
+
+const CurrentPlaying = (props: IProps) => {
     const { data } = props
+
     const NextArrow = (props: any) => {
         return (
             <Button
@@ -72,8 +84,9 @@ const MainSlider = (props: IProps) => {
         )
     }
 
+
     const settings: Settings = {
-        infinite: false,
+        infinite: true,
         speed: 500,
         slidesToShow: 5,
         slidesToScroll: 3,
@@ -113,6 +126,7 @@ const MainSlider = (props: IProps) => {
             sx={{
                 width: "100%",
                 margin: "0 50px",
+                marginBottom: "40px",
                 ".movie": {
                     padding: "0 10px",
                     "img": {
@@ -127,7 +141,7 @@ const MainSlider = (props: IProps) => {
                     sx={{
                         marginRight: "50px"
                     }}>
-                    <h2 style={{ textAlign: 'center', color: 'black' }}> Coming soon </h2>
+                    <h2 style={{ textAlign: 'center', color: 'white' }}> Now Playing </h2>
                 </Box>
                 <Slider {...settings}>
                     {data.map(movie => (
@@ -144,16 +158,26 @@ const MainSlider = (props: IProps) => {
                                     href={`/movie/${convertSlugUrl(movie.title)}-${movie._id}`}
                                     style={{ textDecoration: 'none' }}
                                 >
-                                    <h5 style={{ color: "black", margin: '0.5px 0 0.5px 0', fontSize: "15px" }}>{movie.title}</h5>
+                                    <h5 style={{ color: "white", margin: '0.5px 0 0.5px 0', fontSize: "15px" }}>{movie.title}</h5>
                                 </Link>
-                                <h5 style={{ color: "rgb(102, 102, 102)", margin: 0, fontSize: "12px" }}>{movie.genres}</h5>
+                                <h5 style={{ color: "#ccc", margin: 0, fontSize: "12px" }}>{movie.genres}</h5>
+                                <Box sx={{ display: "flex" }}>
+                                    <StarIcon
+                                        sx={{
+                                            width: "15px",
+                                            height: "15px"
+                                        }}
+                                        color='warning' />
+                                    <h5 style={{ color: "white", margin: 0, fontSize: "12px" }}>{movie.vote_average.toFixed(1)}</h5>
+                                </Box>
                             </div>
                         </div>
                     ))}
                 </Slider>
             </Box>
+            <Divider />
         </Box >
     );
 }
 
-export default MainSlider;
+export default CurrentPlaying;

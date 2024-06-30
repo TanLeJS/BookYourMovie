@@ -1,3 +1,4 @@
+import CurrentPlaying from "@/components/main/currentPlaying";
 import MainSlider from "@/components/main/main.slider";
 import { sendRequest } from "@/utils/api";
 import { Box, Container } from "@mui/material";
@@ -19,7 +20,7 @@ export default async function HomePage() {
       sx={{
         position: 'relative', // Required for the overlay to position correctly
         margin: "0",
-        height: 'calc(100vh - 200px)',
+        height: 'calc(100vh - 250px)',
         backgroundImage: 'url(/background/background.jpg)', // Correctly setting the background image
         backgroundSize: 'cover',
         backgroundPosition: 'center',
@@ -39,22 +40,18 @@ export default async function HomePage() {
           zIndex: 2, // Make sure the content is above the overlay
         }
       }}>
-      <Container
-      >
+      <Container>
 
-        <MainSlider
-          title="Now Playing"
+        <CurrentPlaying
           data={currentPlaying?.data ?? []}
         />
       </Container>
 
       <Container>
         <MainSlider
-          title="Coming soon"
           data={upComing?.data ?? []}
         />
       </Container>
-
     </Box>
   );
 }
