@@ -12,10 +12,11 @@ import "slick-carousel/slick/slick.css";
 
 interface IProps {
     data: IMovieTop[],
+    title: string,
 }
 
 const MainSlider = (props: IProps) => {
-    const { data } = props
+    const { data, title } = props
     const NextArrow = (props: any) => {
         return (
             <Button
@@ -112,7 +113,8 @@ const MainSlider = (props: IProps) => {
         <Box
             sx={{
                 width: "100%",
-                margin: "0 50px",
+                margin: "0 30px",
+                marginBottom: "20px",
                 ".movie": {
                     padding: "0 10px",
                     "img": {
@@ -127,24 +129,28 @@ const MainSlider = (props: IProps) => {
                     sx={{
                         marginRight: "50px"
                     }}>
-                    <h2 style={{ textAlign: 'center', color: 'black' }}> Coming soon </h2>
+                    <h2 style={{ textAlign: 'center', color: 'black' }}> {title} </h2>
                 </Box>
                 <Slider {...settings}>
                     {data.map(movie => (
                         <div className='movie' key={movie._id} style={{ display: 'flex', alignItems: 'flex-start' }}>
                             <div style={{ position: "relative", height: "225px", width: "150px" }}>
-                                <Image
-                                    alt="Movie Poster"
-                                    src={`https://image.tmdb.org/t/p/original${movie.poster_path}`}
-                                    fill
-                                />
+                                <Link
+                                    href={`/movie/${convertSlugUrl(movie.title)}-${movie._id}`}
+                                    style={{ textDecoration: 'none' }}>
+                                    <Image
+                                        alt="Movie Poster"
+                                        src={`https://image.tmdb.org/t/p/original${movie.poster_path}`}
+                                        fill
+                                    />
+                                </Link>
                             </div>
-                            <div style={{ flex: 1, marginTop: "2px" }}>
+                            <div style={{ flex: 1 }}>
                                 <Link
                                     href={`/movie/${convertSlugUrl(movie.title)}-${movie._id}`}
                                     style={{ textDecoration: 'none' }}
                                 >
-                                    <h5 style={{ color: "black", margin: '0.5px 0 0.5px 0', fontSize: "15px" }}>{movie.title}</h5>
+                                    <h5 style={{ color: "black", margin: 0, fontSize: "15px" }}>{movie.title}</h5>
                                 </Link>
                                 <h5 style={{ color: "rgb(102, 102, 102)", margin: 0, fontSize: "12px" }}>{movie.genres}</h5>
                             </div>

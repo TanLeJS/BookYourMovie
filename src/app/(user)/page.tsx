@@ -15,43 +15,47 @@ export default async function HomePage() {
   })
 
 
+
   return (
-    <Box
-      sx={{
-        position: 'relative', // Required for the overlay to position correctly
-        margin: "0",
-        height: 'calc(100vh - 250px)',
-        backgroundImage: 'url(/background/background.jpg)', // Correctly setting the background image
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        padding: "20px",
-        '::before': {
-          content: '""',
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-          backgroundColor: 'rgba(0, 0, 0, 0.8)', // Increase opacity to make it darker
-          zIndex: 1, // Make sure the overlay is behind the content
-        },
-        '> *': {
-          position: 'relative',
-          zIndex: 2, // Make sure the content is above the overlay
-        }
-      }}>
-      <Container>
-
-        <CurrentPlaying
-          data={currentPlaying?.data ?? []}
-        />
-      </Container>
-
+    <Box>
+      <Box
+        sx={{
+          position: 'relative', // Required for the overlay to position correctly
+          margin: "0",
+          height: 'calc(100vh - 250px)', // Adjust height to be the full viewport height minus 250px
+          backgroundImage: 'url(/background/background.jpg)', // Correctly setting the background image
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          padding: "20px",
+          '::before': {
+            content: '""',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            backgroundColor: 'rgba(0, 0, 0, 0.8)', // Increase opacity to make it darker
+            zIndex: 1, // Make sure the overlay is behind the content
+          },
+          '> *': {
+            position: 'relative',
+            zIndex: 2, // Make sure the content is above the overlay
+          }
+        }}
+      >
+        <Container>
+          <CurrentPlaying
+            data={currentPlaying?.data ?? []}
+          />
+        </Container>
+      </Box>
       <Container>
         <MainSlider
+          title="Coming Soon"
           data={upComing?.data ?? []}
         />
       </Container>
+
     </Box>
   );
 }

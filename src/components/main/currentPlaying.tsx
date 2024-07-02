@@ -121,12 +121,10 @@ const CurrentPlaying = (props: IProps) => {
     };
     //box === div
     return (
-
         <Box
             sx={{
                 width: "100%",
-                margin: "0 50px",
-                marginBottom: "40px",
+                margin: "0 30px",
                 ".movie": {
                     padding: "0 10px",
                     "img": {
@@ -147,18 +145,22 @@ const CurrentPlaying = (props: IProps) => {
                     {data.map(movie => (
                         <div className='movie' key={movie._id} style={{ display: 'flex', alignItems: 'flex-start' }}>
                             <div style={{ position: "relative", height: "225px", width: "150px" }}>
-                                <Image
-                                    alt="Movie Poster"
-                                    src={`https://image.tmdb.org/t/p/original${movie.poster_path}`}
-                                    fill
-                                />
+                                <Link
+                                    href={`/movie/${convertSlugUrl(movie.title)}-${movie._id}`}
+                                    style={{ textDecoration: 'none' }}>
+                                    <Image
+                                        alt="Movie Poster"
+                                        src={`https://image.tmdb.org/t/p/original${movie.poster_path}`}
+                                        fill
+                                    />
+                                </Link>
                             </div>
                             <div style={{ flex: 1, marginTop: "2px" }}>
                                 <Link
                                     href={`/movie/${convertSlugUrl(movie.title)}-${movie._id}`}
                                     style={{ textDecoration: 'none' }}
                                 >
-                                    <h5 style={{ color: "white", margin: '0.5px 0 0.5px 0', fontSize: "15px" }}>{movie.title}</h5>
+                                    <h5 style={{ color: "white", margin: 0, fontSize: "15px" }}>{movie.title}</h5>
                                 </Link>
                                 <h5 style={{ color: "#ccc", margin: 0, fontSize: "12px" }}>{movie.genres}</h5>
                                 <Box sx={{ display: "flex" }}>
