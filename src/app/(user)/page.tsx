@@ -1,5 +1,8 @@
-import CurrentPlaying from "@/components/main/currentPlaying";
+
+import CurrentPlaying from "@/components/main/current.playing";
 import MainSlider from "@/components/main/main.slider";
+import SortPagination from "@/components/main/sort.pagination";
+
 import { sendRequest } from "@/utils/api";
 import { Box, Container } from "@mui/material";
 
@@ -13,6 +16,7 @@ export default async function HomePage() {
     url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/movie/upcoming`,
     method: "GET",
   })
+
 
 
 
@@ -55,7 +59,9 @@ export default async function HomePage() {
           data={upComing?.data ?? []}
         />
       </Container>
-
+      <Container>
+        <SortPagination />
+      </Container>
     </Box>
   );
 }

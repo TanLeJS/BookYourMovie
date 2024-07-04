@@ -34,7 +34,7 @@ declare global {
     adult: boolean;
     status: string;
     title: string;
-    genres: string[];
+    genres: string;
     backdrop_path: string;
     genre_ids: string[];
     original_language: string;

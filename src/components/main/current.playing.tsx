@@ -17,7 +17,6 @@ interface IProps {
 }
 
 const styles = {
-
     largeIcon: {
         width: 20,
         height: 20,
