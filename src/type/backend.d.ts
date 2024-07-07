@@ -29,7 +29,7 @@ declare global {
     result: T[];
   }
 
-  interface IMovieTop {
+  interface IMovie {
     _id: string;
     adult: boolean;
     status: string;

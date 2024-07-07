@@ -11,7 +11,7 @@ import "slick-carousel/slick/slick-theme.css";
 import "slick-carousel/slick/slick.css";
 
 interface IProps {
-    data: IMovieTop[],
+    data: IMovie[],
     title: string,
 }
 
@@ -136,7 +136,7 @@ const MainSlider = (props: IProps) => {
                         <div className='movie' key={movie._id} style={{ display: 'flex', alignItems: 'flex-start' }}>
                             <div style={{ position: "relative", height: "225px", width: "150px" }}>
                                 <Link
-                                    href={`/movie/${convertSlugUrl(movie.title)}-${movie._id}`}
+                                    href={`/movies/${convertSlugUrl(movie.title)}-${movie._id}`}
                                     style={{ textDecoration: 'none' }}>
                                     <Image
                                         alt="Movie Poster"
@@ -147,7 +147,7 @@ const MainSlider = (props: IProps) => {
                             </div>
                             <div style={{ flex: 1 }}>
                                 <Link
-                                    href={`/movie/${convertSlugUrl(movie.title)}-${movie._id}`}
+                                    href={`/movies/${convertSlugUrl(movie.title)}-${movie._id}`}
                                     style={{ textDecoration: 'none' }}
                                 >
                                     <h5 style={{ color: "black", margin: 0, fontSize: "15px" }}>{movie.title}</h5>

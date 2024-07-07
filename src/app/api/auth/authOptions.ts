@@ -88,7 +88,6 @@ export const authOptions: AuthOptions = {
             name: user.name,
           },
         });
-        console.log(res);
         if (res.data) {
           token.access_token = res.data?.access_token;
           token.refresh_token = res.data.refresh_token;

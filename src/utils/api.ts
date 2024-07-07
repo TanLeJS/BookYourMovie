@@ -20,6 +20,7 @@ export const sendRequest = async <T>(props: IRequest) => {
     body: body ? JSON.stringify(body) : null,
     ...nextOption,
   };
+
   if (useCredentials) options.credentials = "include";
 
   if (queryParams) {
@@ -64,7 +65,8 @@ export const sendRequestFile = async <T>(props: IRequest) => {
   if (useCredentials) options.credentials = "include";
 
   if (queryParams) {
-    url = `${url}?${queryString.stringify(queryParams)}`;
+    url = `${url}
+    ${queryString.stringify(queryParams)}`;
   }
 
   return fetch(url, options).then((res) => {

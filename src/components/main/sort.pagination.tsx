@@ -1,5 +1,4 @@
 "use client"
-
 import { convertSlugUrl, sendRequest } from "@/utils/api";
 import { useToast } from "@/utils/toast";
 import SearchIcon from '@mui/icons-material/Search';
@@ -16,6 +15,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import * as React from 'react';
 
+
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
     borderRadius: theme.shape.borderRadius,
@@ -23,13 +23,9 @@ const Search = styled('div')(({ theme }) => ({
     '&:hover': {
         backgroundColor: alpha(theme.palette.common.white, 0.25),
     },
-    marginRight: theme.spacing(2),
+    marginRight: theme.spacing(1),  // Adjusted margin
     marginLeft: 0,
-    width: '100%',
-    [theme.breakpoints.up('sm')]: {
-        marginLeft: theme.spacing(3),
-        width: 'auto',
-    },
+    width: 'auto',
 }));
 
 const SearchIconWrapper = styled('div')(({ theme }) => ({
@@ -46,86 +42,82 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     color: 'inherit',
     '& .MuiInputBase-input': {
         padding: theme.spacing(1, 1, 1, 0),
-        // vertical padding + font size from searchIcon
         paddingLeft: `calc(1em + ${theme.spacing(4)})`,
         transition: theme.transitions.create('width'),
-        width: '50%',
+        width: '100%',
         [theme.breakpoints.up('md')]: {
-            width: '400px'
+            width: '200px',  // Adjusted width
         },
     },
 }));
 
+
+interface GetMoviesResponse {
+    pagination: {
+        pages: number;
+        total: number;
+    }
+    ,
+    result: IMovie[]
+}
+
+interface GetMoviesRequest {
+    current: number,
+    limit: number,
+    q: string,
+};
+
 const SortPagination = () => {
     const router = useRouter()
     const toast = useToast();
-    const [listMovies, setListMovies] = React.useState<IMovieTop[]>([]);
+    const [moviesResponse, setMoviesResponse] = React.useState<GetMoviesResponse>();
     const [type, setType] = React.useState("");
-    const [meta, setMeta] = React.useState({
-        current: 1,
-        pageSize: 20,
-        pages: 0,
-        total: 0
-    });
-
+    const [moviesRequest, setMoviesRequest] = React.useState<GetMoviesRequest>({ current: 1, limit: 20, q: "" })
 
     React.useEffect(() => {
-        fetchPageWithPagination(meta.current);
-        router.refresh()
-    }, [meta.current]); // Call this effect when the `current` page changes
+        const fetchPageWithPagination = async () => {
+            try {
+                const url = new URL(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/movie`);
+                const res = await sendRequest<IBackendRes<IMovie[]>>({
+                    url: url.toString(),
+                    method: "GET",
+                    queryParams: {
+                        current: moviesRequest.current,
+                        limit: moviesRequest.limit,
+                        q: moviesRequest.q
+                    }
+                });
 
+                if (res && res.data) {
+                    const data = res.data;
+                    //@ts-ignore
+                    setMoviesResponse(data)
+                } else {
+                    toast.error(res.message);
+                }
+            } catch (error) {
+                toast.error("Failed to fetch movies. Please try again.");
+            }
+        };
+        fetchPageWithPagination();
+    }, [moviesRequest.current, moviesRequest.q]);
+
+    const handlePageChange = async (event: React.ChangeEvent<unknown>, page: number) => {
+        setMoviesRequest(prev => ({
+            ...prev,
+            current: page,
+        })
+        )
+    };
 
     const handleTypeChange = (event: SelectChangeEvent) => {
         setType(event.target.value as string);
-    };
-
-
-    const handlePageChange = async (event: React.ChangeEvent<unknown>, page: number) => {
-        setMeta({
-            current: page,
-            pageSize: meta.pageSize,
-            pages: meta.pages,
-            total: meta.total
-        }
+        setMoviesRequest(prev => ({
+            ...prev,
+            current: 1,
+            q: event.target.value as string,
+        })
         )
-
-    };
-
-    const fetchPageWithPagination = async (page: number) => {
-        try {
-            const result = await sendRequest<IBackendRes<IMovieTop[]>>({
-                url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/movie?current=${meta.current}&pageSize=${meta.pageSize}`,
-                method: "GET",
-                nextOption: {
-                    caches: "no-store"
-                }
-
-            });
-
-            if (result && result.data) {
-                const data = result.data;
-                //@ts-ignore
-                setListMovies(data.result);
-                console.log(data.meta.current)
-                console.log(data.meta.pageSize)
-                console.log(data.meta.pages)
-                console.log(data.meta.total)
-                setMeta({
-                    //@ts-ignore
-                    current: data.meta.current,
-                    //@ts-ignore
-                    pageSize: data.meta.pageSize,
-                    //@ts-ignore
-                    pages: data.meta.pages,
-                    //@ts-ignore
-                    total: data.meta.total,
-                });
-            } else {
-                toast.error(result.message);
-            }
-        } catch (error) {
-            toast.error("Failed to fetch movies. Please try again.");
-        }
     };
 
     return (
@@ -133,7 +125,7 @@ const SortPagination = () => {
             <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "30px" }}>
                 <h2 style={{ color: "black", marginLeft: "20px", marginBottom: "30px" }}>Finding Movie</h2>
                 <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-                    <FormControl sx={{ minWidth: 150 }}>
+                    <FormControl sx={{ minWidth: 120, marginRight: 1 }}>
                         <InputLabel id="demo-simple-select-label">Type</InputLabel>
                         <Select
                             labelId="demo-simple-select-label"
@@ -179,13 +171,13 @@ const SortPagination = () => {
             </Box>
 
             <Grid container spacing={5} >
-                {listMovies.map(movie => (
+                {moviesResponse?.result.map(movie => (
                     <Grid item sx={{ width: '20%' }} key={movie._id}>
                         <Container>
                             <div className='movie' key={movie._id} >
                                 <div style={{ position: "relative", height: "225px", width: "150px" }}>
                                     <Link
-                                        href={`/movie/${convertSlugUrl(movie.title)}-${movie._id}`}
+                                        href={`/movies/${convertSlugUrl(movie.title)}-${movie._id}`}
                                         style={{ textDecoration: 'none' }}>
                                         <Image
                                             alt="Movie Poster"
@@ -196,7 +188,7 @@ const SortPagination = () => {
                                 </div>
                                 <div style={{ flex: 1, marginTop: "2px" }}>
                                     <Link
-                                        href={`/movie/${convertSlugUrl(movie.title)}-${movie._id}`}
+                                        href={`/movies/${convertSlugUrl(movie.title)}-${movie._id}`}
                                         style={{ textDecoration: 'none' }}
                                     >
                                         <h5 style={{ color: "black", margin: 0, fontSize: "15px" }}>{movie.title}</h5>
@@ -219,7 +211,7 @@ const SortPagination = () => {
                 ))}
             </Grid>
             <Stack sx={{ display: "flex", alignItems: "center", marginTop: 4 }} spacing={2}>
-                <Pagination count={meta.pages} page={meta.current} onChange={handlePageChange} />
+                <Pagination count={moviesResponse?.pagination.pages} page={moviesRequest.current} onChange={handlePageChange} />
             </Stack>
         </Box >
     );
