@@ -42,6 +42,7 @@ declare global {
     overview: string;
     popularity: number;
     poster_path: string;
+    backdrop_path: string;
     release_date: string;
     trailer: string;
     duration: number;

@@ -3,17 +3,15 @@ import { fetchDefaultImages } from '@/utils/api';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import MailIcon from '@mui/icons-material/Mail';
 import MoreIcon from '@mui/icons-material/MoreVert';
+import MovieIcon from '@mui/icons-material/Movie';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import SearchIcon from '@mui/icons-material/Search';
 import { Container } from '@mui/material';
 import AppBar from '@mui/material/AppBar';
 import Badge from '@mui/material/Badge';
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
-import InputBase from '@mui/material/InputBase';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import { alpha, styled } from '@mui/material/styles';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { signOut, useSession } from "next-auth/react";
@@ -24,48 +22,7 @@ import * as React from 'react';
 import AuthSignIn from '../auth/auth.signin';
 import SignUp from '../auth/signup';
 
-
 // styled - component
-const Search = styled('div')(({ theme }) => ({
-    position: 'relative',
-    borderRadius: theme.shape.borderRadius,
-    backgroundColor: alpha(theme.palette.common.white, 0.15),
-    '&:hover': {
-        backgroundColor: alpha(theme.palette.common.white, 0.25),
-    },
-    marginRight: theme.spacing(2),
-    marginLeft: 0,
-    width: '100%',
-    [theme.breakpoints.up('sm')]: {
-        marginLeft: theme.spacing(3),
-        width: 'auto',
-    },
-}));
-
-const SearchIconWrapper = styled('div')(({ theme }) => ({
-    padding: theme.spacing(0, 2),
-    height: '100%',
-    position: 'absolute',
-    pointerEvents: 'none',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-}));
-
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-    color: 'inherit',
-    '& .MuiInputBase-input': {
-        padding: theme.spacing(1, 1, 1, 0),
-        // vertical padding + font size from searchIcon
-        paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-        transition: theme.transitions.create('width'),
-        width: '100%',
-        [theme.breakpoints.up('md')]: {
-            width: '400px'
-
-        },
-    },
-}));
 
 export default function AppHeader() {
 
@@ -188,22 +145,24 @@ export default function AppHeader() {
             <AppBar
                 position="static"
                 sx={{
-                    backgroundColor: "#000000de"
+                    backgroundColor: "white"
                 }}
             >
                 <Container>
                     <Toolbar>
+                        <MovieIcon color="primary" />
                         <Typography
                             variant="h6"
                             noWrap
                             component="div"
                             sx={{
                                 display: { xs: 'none', sm: 'block' },
-                                cursor: "pointer"
+                                cursor: "pointer",
+                                color: "black"
                             }}
                             onClick={() => handleRedirectHome()}
                         >
-                            Regal
+                            TCinema
                         </Typography>
 
                         <Box sx={{ flexGrow: 1 }} />
