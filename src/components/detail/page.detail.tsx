@@ -1,8 +1,13 @@
 "use client"
 
 import YouTubeIcon from '@mui/icons-material/YouTube';
-import { Box, Button, Paper, Typography } from '@mui/material';
+import { Box, Button, Icon, Paper, Typography } from '@mui/material';
+
 import { styled } from '@mui/system';
+import Link from 'next/link';
+import AgeAllowed from '../../../public/icon/ageallowed.png';
+import AgeRestricted from '../../../public/icon/agerestricted.png';
+
 
 const CustomButton = styled(Button)({
     display: 'flex',
@@ -11,7 +16,7 @@ const CustomButton = styled(Button)({
     backgroundColor: '#f0f0f0', // light gray background
     color: '#000', // black text
     borderRadius: '25px', // rounded corners
-    padding: '10px 20px', // increased padding
+    padding: '10px 15px', // increased padding
     boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)', // subtle shadow
     textTransform: 'none', // keep the text case as is
     fontSize: '1rem', // increased font size
@@ -28,7 +33,6 @@ const Backdrop = styled(Box)({
     backgroundSize: 'cover',
     backgroundPosition: 'center',
 });
-
 
 const Overlay = styled(Box)({
     position: 'absolute',
@@ -53,7 +57,16 @@ const Poster = styled('img')({
     width: '200px',
     height: 'auto',
     marginRight: '20px',
+    marginLeft: "100px"
 });
+
+const MovieDetails = styled(Box)({
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    marginLeft: '20px',
+});
+
 
 
 interface IDetail {
@@ -62,29 +75,51 @@ interface IDetail {
 
 const MovieDetail = (props: IDetail) => {
     const movie = props.data;
-
     return (
         <Paper elevation={0}>
             <Backdrop style={{ backgroundImage: `url(https://image.tmdb.org/t/p/original${movie.backdrop_path})` }}>
                 <Overlay />
-                <Box sx={{
-                    position: 'relative',
-                    zIndex: 2,
-                    display: 'flex',
-                    padding: '20px',
-                    alignItems: 'center',
-                    justifyContent: "left",
-                    color: '#fff',
-                }}>
+                <Content>
                     <Poster src={`https://image.tmdb.org/t/p/original${movie.poster_path}`} alt={`${movie.title} Poster`} />
-                    <Box>
-                        <Typography variant="h2" component="h1">{movie.title}</Typography>
-                        <CustomButton variant="contained">
-                            <YouTubeIcon style={{ color: '#FF4500', marginRight: '8px', fontSize: '2rem' }} /> {/* orange YouTube icon */}
-                            Watch
-                        </CustomButton>
-                    </Box>
-                </Box>
+                    <MovieDetails>
+                        <Box display={"flex"} sx={{
+                            gap: "5px"
+                        }}>
+                            <Box>
+                                {movie.adult ? (
+                                    <Icon>
+                                        <img src={AgeRestricted.src} alt="Age Restricted" height={25} width={25} />
+                                    </Icon>
+                                ) : (
+                                    <Icon>
+                                        <img src={AgeAllowed.src} alt="Age Allowed" height={25} width={25} />
+                                    </Icon>
+                                )}
+                            </Box>
+                            <Typography sx={{
+                                fontSize: '1rem',
+                            }}
+                                variant="body1">
+
+                                | {movie.duration} MINS
+                            </Typography>
+                        </Box>
+                        <Typography variant="h2" component="h1" sx={{
+                            fontSize: '2.5rem',
+                            fontWeight: 'bold',
+                            marginBottom: '10px',
+                        }}>{movie.title}</Typography>
+
+                        <Link href={`https://www.youtube.com/watch?v=${movie.trailer}`} passHref legacyBehavior>
+                            <a target="_blank" style={{ textDecoration: "none" }}>
+                                <CustomButton variant="contained">
+                                    <YouTubeIcon style={{ color: '#FF4500', marginRight: '8px', fontSize: '1.5rem' }} />
+                                    Watch
+                                </CustomButton>
+                            </a>
+                        </Link>
+                    </MovieDetails>
+                </Content>
             </Backdrop>
         </Paper>
     );
