@@ -47,7 +47,7 @@ declare global {
     trailer: string;
     duration: number;
     director: string;
-    actors: string[];
+    actors: string;
     vote_average: number;
     createdAt: Date;
     updatedAt: Date;

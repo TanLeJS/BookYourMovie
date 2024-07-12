@@ -1,12 +1,43 @@
 "use client"
 
 import YouTubeIcon from '@mui/icons-material/YouTube';
-import { Box, Button, Icon, Paper, Typography } from '@mui/material';
+import { Box, Button, Icon, Paper, Tab, Tabs, Typography } from '@mui/material';
 
 import { styled } from '@mui/system';
 import Link from 'next/link';
+import React from 'react';
 import AgeAllowed from '../../../public/icon/ageallowed.png';
 import AgeRestricted from '../../../public/icon/agerestricted.png';
+import MovieInfo from './movie.info';
+
+interface TabPanelProps {
+    children?: React.ReactNode;
+    index: number;
+    value: number;
+}
+
+function CustomTabPanel(props: TabPanelProps) {
+    const { children, value, index, ...other } = props;
+
+    return (
+        <div
+            role="tabpanel"
+            hidden={value !== index}
+            id={`simple-tabpanel-${index}`}
+            aria-labelledby={`simple-tab-${index}`}
+            {...other}
+        >
+            {value === index && <Box>{children}</Box>}
+        </div>
+    );
+}
+
+function a11yProps(index: number) {
+    return {
+        id: `simple-tab-${index}`,
+        'aria-controls': `simple-tabpanel-${index}`,
+    };
+}
 
 
 const CustomButton = styled(Button)({
@@ -75,6 +106,13 @@ interface IDetail {
 
 const MovieDetail = (props: IDetail) => {
     const movie = props.data;
+    const [value, setValue] = React.useState(0);
+
+
+    const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+        setValue(newValue);
+    };
+
     return (
         <Paper elevation={0}>
             <Backdrop style={{ backgroundImage: `url(https://image.tmdb.org/t/p/original${movie.backdrop_path})` }}>
@@ -120,7 +158,19 @@ const MovieDetail = (props: IDetail) => {
                         </Link>
                     </MovieDetails>
                 </Content>
+                <Box sx={{ marginLeft: "350px" }}>
+                    <Tabs value={value} onChange={handleChange}>
+                        <Tab label="SHOWTIMES" {...a11yProps(0)} sx={{ color: "white" }} />
+                        <Tab label="DETAILS" {...a11yProps(1)} sx={{ color: "white" }} />
+                    </Tabs>
+                </Box>
             </Backdrop>
+            <CustomTabPanel value={value} index={0}>
+                ShowTime
+            </CustomTabPanel>
+            <CustomTabPanel value={value} index={1}>
+                <MovieInfo data={movie} />
+            </CustomTabPanel>
         </Paper>
     );
 };
