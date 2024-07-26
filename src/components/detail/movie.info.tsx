@@ -6,11 +6,11 @@ import AgeAllowed from '../../../public/icon/ageallowed.png';
 import AgeRestricted from '../../../public/icon/agerestricted.png';
 
 interface IInfo {
-    data: IMovie
+    movie: IMovie
 }
 
 const MovieInfo = (props: IInfo) => {
-    const movie = props.data;
+    const movie = props.movie;
     return (
         <Box sx={{ backgroundColor: '#1c1c1c', color: '#ffffff', padding: '20px' }}>
             <Container >

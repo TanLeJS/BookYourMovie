@@ -2,7 +2,7 @@
 
 import { Button } from '@mui/material';
 import { useState } from 'react';
-import SeatSelector from "./seatselector";
+import SeatSelector from "./seat.selector";
 
 const seatsData = [
     { label: 'A1', status: 'available' },

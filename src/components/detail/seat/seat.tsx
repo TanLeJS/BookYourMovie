@@ -2,7 +2,7 @@ import { Box, Tooltip } from '@mui/material';
 
 const Seat = ({ seat, selected, onClick }) => {
     const getColor = () => {
-        if (selected) return 'pink';
+        if (selected) return 'orange';
         switch (seat.status) {
             case 'available':
                 return 'purple';

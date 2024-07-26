@@ -53,4 +53,12 @@ declare global {
     updatedAt: Date;
     isDeleted: boolean;
   }
+
+  interface ITheater {
+    _id: string;
+    name: string;
+    location: string;
+    zip_code: number;
+    totalSeats: number;
+  }
 }

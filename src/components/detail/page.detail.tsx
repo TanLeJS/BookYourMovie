@@ -9,6 +9,7 @@ import React from 'react';
 import AgeAllowed from '../../../public/icon/ageallowed.png';
 import AgeRestricted from '../../../public/icon/agerestricted.png';
 import MovieInfo from './movie.info';
+import ShowTimes from './movie.showtimes';
 
 interface TabPanelProps {
     children?: React.ReactNode;
@@ -18,7 +19,6 @@ interface TabPanelProps {
 
 function CustomTabPanel(props: TabPanelProps) {
     const { children, value, index, ...other } = props;
-
     return (
         <div
             role="tabpanel"
@@ -101,11 +101,13 @@ const MovieDetails = styled(Box)({
 
 
 interface IDetail {
-    data: IMovie;
+    movie: IMovie;
+    theaterList: ITheater[];
 }
 
 const MovieDetail = (props: IDetail) => {
-    const movie = props.data;
+    const movie = props.movie;
+    const theaterList = props.theaterList;
     const [value, setValue] = React.useState(0);
 
 
@@ -166,10 +168,13 @@ const MovieDetail = (props: IDetail) => {
                 </Box>
             </Backdrop>
             <CustomTabPanel value={value} index={0}>
-                ShowTime
+                <ShowTimes
+                    movie={movie}
+                    theaterList={theaterList}
+                />
             </CustomTabPanel>
             <CustomTabPanel value={value} index={1}>
-                <MovieInfo data={movie} />
+                <MovieInfo movie={movie} />
             </CustomTabPanel>
         </Paper>
     );

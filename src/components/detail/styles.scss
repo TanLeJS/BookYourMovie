@@ -1,0 +1,80 @@
+.datePicker {
+  display: flex;
+  gap: 5px; // Corrected gap value
+}
+
+.customButton {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center; // Center items vertically
+  font-weight: bold;
+  font-family: Roboto, sans-serif;
+  color: rgb(0, 0, 0);
+  transition: background 0.4s ease-in-out 0s;
+  padding: 0px;
+  border: 2px solid rgb(255, 255, 255);
+  border-radius: 8px;
+  background: rgb(24, 23, 23);
+  font-size: calc(27.2394px + 0.469484vw);
+  width: 1.9em;
+  min-width: 1.85em;
+  height: 1.9em;
+  min-height: 1.8em;
+  margin: 0.25rem;
+  z-index: 1;
+  text-align: center;
+  cursor: pointer;
+}
+
+.customButton.selected {
+  background: linear-gradient(
+    90deg,
+    rgb(213, 76, 0) 8.38%,
+    rgb(245, 102, 0) 52.76%,
+    rgb(255, 146, 70) 100%
+  );
+  color: white;
+  border-color: rgb(230, 92, 0);
+}
+
+.customButton.selected > .span1 {
+  background: rgb(230, 92, 0);
+}
+
+.customButton.selected > .span2 {
+  background: rgb(255, 255, 255);
+  color: black; // Ensure text is visible on a white background
+}
+
+.span1 {
+  font-size: 0.425em;
+  letter-spacing: 0.03em;
+  line-height: 1.2;
+  width: 100%;
+  color: rgb(255, 255, 255);
+  width: 100%;
+  border-radius: 8px 8px 0px 0px;
+  padding: 0.15em;
+  background: rgb(0, 0, 0);
+  display: flex;
+  align-items: center;
+  justify-content: center; // Center text horizontally
+}
+
+.span2 {
+  font-family: Exo, Helvetica, sans-serif;
+  line-height: 1;
+  font-size: 1em;
+  color: rgb(255, 255, 255);
+  padding: 0.1875em;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center; // Center text horizontally
+  font-weight: bold;
+  cursor: pointer;
+  bottom: 0;
+  border-radius: 0 0 8px 8px;
+}
