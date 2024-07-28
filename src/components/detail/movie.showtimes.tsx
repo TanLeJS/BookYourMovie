@@ -5,9 +5,10 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import MovieIcon from '@mui/icons-material/Movie';
 import PlaceIcon from '@mui/icons-material/Place';
 import { Box, Button, Container, FormControl, Grid, InputLabel, MenuItem, Select, SelectChangeEvent, Typography } from '@mui/material';
+import Link from 'next/link';
 import { useState } from 'react';
 import DatePicker from './datepicker';
-
+import ShowtimeDetailsModal from './details.modal';
 
 const CustomButton = styled(Button)(({ theme }) => ({
     position: 'relative',
@@ -32,31 +33,6 @@ const CustomButton = styled(Button)(({ theme }) => ({
     zIndex: 1,
 }));
 
-const showtimesData = {
-    theaters: [
-        {
-            name: 'Regal Waterford Lakes',
-            address: '541 North Alafaya Trail (2.40mi)',
-            formats: [
-                { type: '4DX', times: ['10:30pm'] },
-                { type: 'IMAX', times: ['11:25pm'] },
-                { type: 'Standard', times: ['9:30pm', '10:00pm', '10:10pm', '11:00pm'] }
-            ]
-        },
-        {
-            name: 'Regal Oviedo Mall',
-            address: '1500 Oviedo Marketplace Blvd (4.83mi)',
-            formats: [{ type: 'Standard', times: ['9:30pm', '10:00pm', '10:30pm'] }]
-        },
-        {
-            name: 'Regal Winter Park Village',
-            address: '510 North Orlando Ave (8.94mi)',
-            formats: [{ type: 'Standard', times: ['9:30pm', '10:00pm', '10:30pm', '10:45pm', '11:00pm'] }]
-        }
-    ],
-    dates: ['18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28']
-};
-
 
 interface IInfo {
     movie: IMovie,
@@ -72,7 +48,7 @@ const ShowTimes = (props: IInfo) => {
     const [theater, setTheater] = useState("");
     const [format, setFormat] = useState("");
     const [date, setDate] = useState(new Date());
-
+    const [openShowTimesDetails, setOpenShowTimesDetails] = useState(false);
 
 
     const handleChangeTheater = (event: SelectChangeEvent) => {
@@ -83,10 +59,14 @@ const ShowTimes = (props: IInfo) => {
         setFormat(event.target.value)
     }
 
+    const handleCloseShowtimesMovieDetails = () => {
+        setOpenShowTimesDetails(false);
+    }
+
     return (
         <Box sx={{ background: 'linear-gradient(90deg, rgb(50, 50, 54) 0%, rgb(36, 35, 39) 100%)', color: 'white', minHeight: '100vh', py: 3 }}>
             <Container>
-                <Box sx={{ display: 'flex', gap: 2, mb: 3, justifyContent: "center" }}>
+                <Box sx={{ display: 'flex', gap: 2, mb: 1, justifyContent: "center" }}>
                     <FormControl sx={{ m: 1, minWidth: 290, background: "rgb(0, 0, 0)" }} size="medium">
                         <InputLabel id="demo-simple-select-label" sx={{ color: 'rgb(255, 255, 255)' }}>
                             Theater
@@ -137,7 +117,6 @@ const ShowTimes = (props: IInfo) => {
                         <Select
                             labelId="demo-simple-select-label"
                             id="demo-simple-select"
-
                             label="Nearby Theaters...."
                             onChange={handleChangeTheater}
                             IconComponent={() => (
@@ -164,16 +143,95 @@ const ShowTimes = (props: IInfo) => {
                             height: "100%",
                             justifyContent: "center",
                             alignItems: "center",
-                            fontSize: "0.42em",
+                            fontSize: "0.4em",
                             fontWeight: "bold",
                             color: "rgb(255, 255, 255)",
                             fontFamily: "Roboto, sans-serif"
-                        }}>Select Day</Typography>
+                        }}>Select Day
+                        </Typography>
                     </CustomButton>
-
                 </Box>
-                <Grid container spacing={3}>
-                    {showtimesData.theaters.map(theater => (
+            </Container >
+            <Container maxWidth="xl">
+                <Grid container spacing={{ xs: 2, md: 3 }} >
+                    {theaterList.map(theater => (
+                        <Grid item xs={12} md={4} key={theater._id}>
+                            <Box
+                                sx={{
+                                    position: "relative",
+                                    borderRadius: "0.625rem 0.625rem 0px 0px",
+                                    overflow: "hidden", // Ensures the overlay stays within the border radius
+                                    background: "linear-gradient(rgb(41, 41, 43) 0%, rgb(58, 56, 63) 100%))",
+                                    backgroundImage: 'url(/background/background2.png)',
+                                    backgroundSize: "cover",
+                                    backgroundRepeat: "no-repeat",
+                                    '&::before': {
+                                        content: '""',
+                                        position: "absolute",
+                                        top: 0,
+                                        left: 0,
+                                        width: "100%",
+                                        height: "100%",
+                                        backgroundColor: "rgba(0, 0, 0, 0.8)", // Adjust the opacity to make the image darker
+                                        zIndex: 1,
+                                    },
+                                }}
+                            >
+                                <Link href={`/theatres/${theater.name.toLowerCase()}-${theater._id}`} style={{ color: "#fff", textDecoration: "none", position: "relative", zIndex: 2 }}>
+                                    <Typography variant="h6" sx={{ fontWeight: 'bold', fontSize: "26px" }}>
+                                        {theater.name}
+                                    </Typography>
+                                </Link>
+                                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2, position: "relative", zIndex: 2 }}>
+                                    <LocationOnIcon sx={{ color: "rgb(255, 146, 70)" }} />
+                                    <Typography variant="body2" sx={{ ml: 1, color: "rgb(149, 145, 159)", fontWeight: "700" }}>
+                                        {theater.location}
+                                    </Typography>
+                                </Box>
+                            </Box>
+                            <Box>
+                                <Box sx={{ display: "flex", justifyContent: "space-between", marginTop: "5px", }}>
+                                    <Typography sx={{
+                                        display: "flex",
+                                        flexWrap: "wrap",
+                                        position: "relative",
+                                        gap: "0px 1.125em",
+                                        overflow: "hidden",
+                                        marginRight: "0.5em",
+                                        color: "rgb(205, 204, 208)",
+                                        fontSize: "1.125rem",
+                                        fontWeight: "800",
+
+                                    }}>RealD 3D</Typography>
+                                    <Button sx={{
+                                        background: "rgb(26, 25, 29)",
+                                        borderRadius: "16px",
+                                        fontSize: "0.6875rem",
+                                        fontWeight: "800",
+                                        color: "rgb(149, 145, 159)",
+                                        height: "1.75rem",
+                                        letterSpacing: "0.025em",
+                                        cursor: "pointer",
+                                        boxSizing: "border-box"
+                                    }}
+                                        onClick={() => {
+                                            setOpenShowTimesDetails(true)
+                                        }}
+                                    >
+                                        DETAILS
+
+                                    </Button>
+                                    <ShowtimeDetailsModal
+                                        open={openShowTimesDetails}
+                                        handleClose={handleCloseShowtimesMovieDetails}
+                                    />
+                                </Box>
+
+
+                            </Box>
+                        </Grid>
+                    ))}
+                    {/* {showtimesData.theaters.map(theater => (
                         <Grid item xs={12} md={4} key={theater.name}>
                             <Box sx={{ backgroundColor: '#2c2c2c', borderRadius: 2, p: 2 }}>
                                 <Typography variant="h6" sx={{ fontWeight: 'bold' }}>{theater.name}</Typography>
@@ -193,9 +251,9 @@ const ShowTimes = (props: IInfo) => {
                                 ))}
                             </Box>
                         </Grid>
-                    ))}
+                    ))} */}
                 </Grid>
-            </Container >
+            </Container>
         </Box >
     );
 };
