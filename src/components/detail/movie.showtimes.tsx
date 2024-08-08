@@ -6,9 +6,13 @@ import MovieIcon from '@mui/icons-material/Movie';
 import PlaceIcon from '@mui/icons-material/Place';
 import { Box, Button, Container, FormControl, Grid, InputLabel, MenuItem, Select, SelectChangeEvent, Typography } from '@mui/material';
 import Link from 'next/link';
-import { useState } from 'react';
-import DatePicker from './datepicker';
+import { useRouter } from 'next/navigation';
+
+import { sendRequest } from '@/utils/api';
+import { useToast } from '@/utils/toast';
+import { useEffect, useState } from 'react';
 import ShowtimeDetailsModal from './details.modal';
+import './styles.scss'; // Import the CSS file
 
 const CustomButton = styled(Button)(({ theme }) => ({
     position: 'relative',
@@ -33,23 +37,81 @@ const CustomButton = styled(Button)(({ theme }) => ({
     zIndex: 1,
 }));
 
+const ScheduleButton = styled(Button)(({ theme }) => ({
+    position: "relative",
+    background: "linear-gradient(90deg, rgb(17, 17, 17) 0%, rgb(0, 0, 0) 100%)",
+    color: "rgb(255, 255, 255)",
+    border: "1px solid rgb(0, 0, 0)",
+    borderRadius: "0.2rem",
+    fontSize: "1.125rem",
+    margin: "0.5rem 0px",
+    width: "6.2rem", // Fixed width
+    height: "3rem", // Fixed height
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    boxSizing: 'border-box',
+    flex: '0 0 auto', // Prevent flex-grow and flex-shrink
+}));
+
 
 interface IInfo {
     movie: IMovie,
     theaterList: ITheater[]
 }
 
-
-
+const dates = [
+    { date: "2024-07-25", day: 'Today' },
+    { date: "2024-07-26", day: 'Fri' },
+    { date: "2024-07-27", day: 'Sat' },
+    { date: "2024-07-28", day: 'Sun' },
+    { date: "2024-07-29", day: 'Mon' },
+    { date: "2024-07-30", day: 'Tue' },
+    { date: "2024-07-31", day: 'Wed' },
+    { date: "2024-08-01", day: 'Thu' },
+    { date: "2024-08-02", day: 'Fri' },
+    { date: "2024-08-03", day: 'Sat' },
+    { date: "2024-08-04", day: 'Sun' },
+];
 
 const ShowTimes = (props: IInfo) => {
     const movie = props.movie;
+    const router = useRouter()
+    const toast = useToast()
     const theaterList = props.theaterList
     const [theater, setTheater] = useState("");
     const [format, setFormat] = useState("");
-    const [date, setDate] = useState(new Date());
     const [openShowTimesDetails, setOpenShowTimesDetails] = useState(false);
+    const [scheduleResponse, setScheduleResponse] = useState<IScheduleResponse[]>();
+    const [selectedDate, setSelectedDate] = useState<string>(dates[0].date); // Initialize with the first date
 
+
+    useEffect(() => {
+        // Function to fetch data based on the selected date
+        const fetchData = async () => {
+            try {
+                const url = new URL(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/schedules`);
+                const res = await sendRequest<IBackendRes<IScheduleResponse[]>>({
+                    url: url.toString(),
+                    method: "GET",
+                    queryParams: {
+                        movieID: movie._id,
+                        date: selectedDate,
+                    }
+                });
+                if (res && res.data) {
+                    const scheduleResponse = res.data;
+                    setScheduleResponse(scheduleResponse)
+                } else {
+                    toast.error(res.message);
+                }
+            } catch (error) {
+                toast.error("Failed to fetch movies. Please try again.");
+            }
+        };
+
+        fetchData();
+    }, [selectedDate]); // Refetch data when `selectedDate` changes
 
     const handleChangeTheater = (event: SelectChangeEvent) => {
         setTheater(event.target.value)
@@ -62,6 +124,13 @@ const ShowTimes = (props: IInfo) => {
     const handleCloseShowtimesMovieDetails = () => {
         setOpenShowTimesDetails(false);
     }
+
+    const handleDateChange = (date: string) => {
+        setSelectedDate(date);
+        router.push(`?date=${date}`)
+    };
+
+
 
     return (
         <Box sx={{ background: 'linear-gradient(90deg, rgb(50, 50, 54) 0%, rgb(36, 35, 39) 100%)', color: 'white', minHeight: '100vh', py: 3 }}>
@@ -81,12 +150,12 @@ const ShowTimes = (props: IInfo) => {
                                 <PlaceIcon sx={{ color: "gray" }} />
                             )}
                         >
-                            {theaterList.map((theater) => (
-                                <MenuItem key={theater._id} value={theater.name}>
-                                    {theater.name}
+
+                            {scheduleResponse?.map((response) => (
+                                <MenuItem key={response.theater._id} value={response.theater.name}>
+                                    {response.theater.name}
                                 </MenuItem>
                             ))}
-
                         </Select>
                     </FormControl>
 
@@ -136,7 +205,21 @@ const ShowTimes = (props: IInfo) => {
                         scrollbarWidth: "none",
                         justifyContent: "center"
                     }}>
-                    <DatePicker />
+                    <Box className="datePicker">
+                        {dates.map(dateObj => {
+                            const day = dateObj.date.split("-")[2];
+                            return (
+                                <Box
+                                    key={dateObj.date}
+                                    className={`customButton ${selectedDate === dateObj.date ? 'selected' : ''}`}
+                                    onClick={() => handleDateChange(dateObj.date)}
+                                >
+                                    <Box className="span1">{dateObj.day}</Box>
+                                    <Box className="span2">{day}</Box>
+                                </Box>
+                            );
+                        })}
+                    </Box>
                     <CustomButton>
                         <Typography sx={{
                             display: "flex",
@@ -154,8 +237,8 @@ const ShowTimes = (props: IInfo) => {
             </Container >
             <Container maxWidth="xl">
                 <Grid container spacing={{ xs: 2, md: 3 }} >
-                    {theaterList.map(theater => (
-                        <Grid item xs={12} md={4} key={theater._id}>
+                    {scheduleResponse?.map(response => (
+                        <Grid item xs={12} md={4} key={response.theater._id}>
                             <Box
                                 sx={{
                                     position: "relative",
@@ -177,81 +260,78 @@ const ShowTimes = (props: IInfo) => {
                                     },
                                 }}
                             >
-                                <Link href={`/theatres/${theater.name.toLowerCase()}-${theater._id}`} style={{ color: "#fff", textDecoration: "none", position: "relative", zIndex: 2 }}>
+                                <Link href={`/theatres/${response.theater.name.toLowerCase()}-${response.theater._id}`} style={{ color: "#fff", textDecoration: "none", position: "relative", zIndex: 2 }}>
                                     <Typography variant="h6" sx={{ fontWeight: 'bold', fontSize: "26px" }}>
-                                        {theater.name}
+                                        {response.theater.name}
                                     </Typography>
                                 </Link>
                                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 2, position: "relative", zIndex: 2 }}>
                                     <LocationOnIcon sx={{ color: "rgb(255, 146, 70)" }} />
                                     <Typography variant="body2" sx={{ ml: 1, color: "rgb(149, 145, 159)", fontWeight: "700" }}>
-                                        {theater.location}
+                                        {response.theater.location}
                                     </Typography>
                                 </Box>
                             </Box>
+
                             <Box>
-                                <Box sx={{ display: "flex", justifyContent: "space-between", marginTop: "5px", }}>
-                                    <Typography sx={{
-                                        display: "flex",
-                                        flexWrap: "wrap",
-                                        position: "relative",
-                                        gap: "0px 1.125em",
-                                        overflow: "hidden",
-                                        marginRight: "0.5em",
-                                        color: "rgb(205, 204, 208)",
-                                        fontSize: "1.125rem",
-                                        fontWeight: "800",
+                                {response.formats.map(format => (
+                                    <Box>
+                                        <Box sx={{
+                                            display: "flex",
+                                            justifyContent: "space-between",
+                                            marginTop: "5px",
+                                            backgroundColor: "linear-gradient(rgb(41, 41, 43) 0%, rgb(58, 56, 63) 100%)"
+                                        }}>
+                                            <Typography sx={{
+                                                display: "flex",
+                                                flexWrap: "wrap",
+                                                position: "relative",
+                                                gap: "0px 1.125em",
+                                                overflow: "hidden",
+                                                marginRight: "0.5em",
+                                                color: "rgb(205, 204, 208)",
+                                                fontSize: "1.125rem",
+                                                fontWeight: "800",
+                                            }}>{format.format.toLocaleUpperCase()}
+                                            </Typography>
 
-                                    }}>RealD 3D</Typography>
-                                    <Button sx={{
-                                        background: "rgb(26, 25, 29)",
-                                        borderRadius: "16px",
-                                        fontSize: "0.6875rem",
-                                        fontWeight: "800",
-                                        color: "rgb(149, 145, 159)",
-                                        height: "1.75rem",
-                                        letterSpacing: "0.025em",
-                                        cursor: "pointer",
-                                        boxSizing: "border-box"
-                                    }}
-                                        onClick={() => {
-                                            setOpenShowTimesDetails(true)
-                                        }}
-                                    >
-                                        DETAILS
+                                            <Button sx={{
+                                                background: "rgb(26, 25, 29)",
+                                                borderRadius: "16px",
+                                                fontSize: "0.6875rem",
+                                                fontWeight: "800",
+                                                color: "rgb(149, 145, 159)",
+                                                height: "1.75rem",
+                                                letterSpacing: "0.025em",
+                                                cursor: "pointer",
+                                                boxSizing: "border-box"
+                                            }}
+                                                onClick={() => {
+                                                    setOpenShowTimesDetails(true)
+                                                }}
+                                            >
+                                                DETAILS
+                                            </Button>
+                                            <ShowtimeDetailsModal
+                                                open={openShowTimesDetails}
+                                                handleClose={handleCloseShowtimesMovieDetails}
+                                            />
+                                        </Box>
+                                        <Box sx={{ margin: "0.25rem 0px 0px -0.625rem", display: "flex", gap: "5px", flexWrap: "wrap" }}>
+                                            {format.schedules.map(schedule => (
+                                                <ScheduleButton>
+                                                    {schedule.time}
+                                                </ScheduleButton>
+                                            ))}
 
-                                    </Button>
-                                    <ShowtimeDetailsModal
-                                        open={openShowTimesDetails}
-                                        handleClose={handleCloseShowtimesMovieDetails}
-                                    />
-                                </Box>
-
+                                        </Box>
+                                    </Box>
+                                )
+                                )}
 
                             </Box>
                         </Grid>
                     ))}
-                    {/* {showtimesData.theaters.map(theater => (
-                        <Grid item xs={12} md={4} key={theater.name}>
-                            <Box sx={{ backgroundColor: '#2c2c2c', borderRadius: 2, p: 2 }}>
-                                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>{theater.name}</Typography>
-                                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                                    <LocationOnIcon color="secondary" />
-                                    <Typography variant="body2" sx={{ ml: 1 }}>{theater.address}</Typography>
-                                </Box>
-                                {theater.formats.map(format => (
-                                    <Box key={format.type} sx={{ mb: 2 }}>
-                                        <Typography variant="body1" sx={{ fontWeight: 'bold', mb: 1 }}>{format.type}</Typography>
-                                        <Box sx={{ display: 'flex', gap: 1 }}>
-                                            {format.times.map(time => (
-                                                <Button key={time} variant="contained" sx={{ backgroundColor: '#1c1c1c', color: 'white' }}>{time}</Button>
-                                            ))}
-                                        </Box>
-                                    </Box>
-                                ))}
-                            </Box>
-                        </Grid>
-                    ))} */}
                 </Grid>
             </Container>
         </Box >

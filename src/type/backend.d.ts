@@ -61,4 +61,27 @@ declare global {
     zip_code: number;
     totalSeats: number;
   }
+
+  interface ISchedule {
+    _id: string;
+    movie: string;
+    screen: string;
+    date: Date;
+    time: string;
+    format: string;
+    seats: {
+      label: string;
+      status: string;
+    }[];
+  }
+
+  interface IFormat {
+    format: string; // The format type (e.g., standard, 3D, IMAX)
+    schedules: ISchedule[]; // Array of schedules for this format
+  }
+
+  interface IScheduleResponse {
+    theater: ITheater;
+    formats: IFormat[]; // Array of formats, each containing its schedules
+  }
 }

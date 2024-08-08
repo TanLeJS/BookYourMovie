@@ -105,6 +105,7 @@ interface IDetail {
     theaterList: ITheater[];
 }
 
+
 const MovieDetail = (props: IDetail) => {
     const movie = props.movie;
     const theaterList = props.theaterList;

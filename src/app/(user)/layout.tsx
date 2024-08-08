@@ -12,7 +12,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <>
       <AppHeader />
       {children}
-      <div style={{ marginBottom: "100px" }}></div>
     </>
   );
 }
