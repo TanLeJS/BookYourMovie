@@ -1,4 +1,4 @@
-
+import AppHeader from "@/components/header/app.header";
 import CurrentPlaying from "@/components/main/current.playing";
 import MainSlider from "@/components/main/main.slider";
 import SortPagination from "@/components/main/sort.pagination";
@@ -17,16 +17,14 @@ export default async function HomePage() {
     method: "GET",
   })
 
-
-
-
   return (
     <Box>
+      <AppHeader />
       <Box
         sx={{
           position: 'relative', // Required for the overlay to position correctly
           margin: "0",
-          height: 'calc(100vh - 250px)', // Adjust height to be the full viewport height minus 250px
+          height: 'calc(100vh - 350px)', // Adjust height to be the full viewport height minus 250px
           backgroundImage: 'url(/background/background.jpg)', // Correctly setting the background image
           backgroundSize: 'cover',
           backgroundPosition: 'center',

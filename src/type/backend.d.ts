@@ -62,10 +62,16 @@ declare global {
     totalSeats: number;
   }
 
+  interface IScreen {
+    name: string;
+    totalSeats: number;
+    theater: ITheater;
+  }
+
   interface ISchedule {
     _id: string;
-    movie: string;
-    screen: string;
+    movie: IMovie;
+    screen: IScreen;
     date: Date;
     time: string;
     format: string;

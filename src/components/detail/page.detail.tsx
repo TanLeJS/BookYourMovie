@@ -161,7 +161,7 @@ const MovieDetail = (props: IDetail) => {
                         </Link>
                     </MovieDetails>
                 </Content>
-                <Box sx={{ marginLeft: "350px" }}>
+                <Box sx={{ marginLeft: "370px", marginTop: "61px" }}>
                     <Tabs value={value} onChange={handleChange}>
                         <Tab label="SHOWTIMES" {...a11yProps(0)} sx={{ color: "white" }} />
                         <Tab label="DETAILS" {...a11yProps(1)} sx={{ color: "white" }} />

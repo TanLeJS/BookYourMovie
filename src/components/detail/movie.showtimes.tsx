@@ -1,15 +1,16 @@
 "use client"
+import { sendRequest } from '@/utils/api';
+import { useToast } from '@/utils/toast';
 import styled from '@emotion/styled';
+import ClosedCaptionIcon from '@mui/icons-material/ClosedCaption';
 import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
+import HearingIcon from '@mui/icons-material/Hearing';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import MovieIcon from '@mui/icons-material/Movie';
 import PlaceIcon from '@mui/icons-material/Place';
 import { Box, Button, Container, FormControl, Grid, InputLabel, MenuItem, Select, SelectChangeEvent, Typography } from '@mui/material';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-
-import { sendRequest } from '@/utils/api';
-import { useToast } from '@/utils/toast';
 import { useEffect, useState } from 'react';
 import ShowtimeDetailsModal from './details.modal';
 import './styles.scss'; // Import the CSS file
@@ -45,13 +46,18 @@ const ScheduleButton = styled(Button)(({ theme }) => ({
     borderRadius: "0.2rem",
     fontSize: "1.125rem",
     margin: "0.5rem 0px",
-    width: "6.2rem", // Fixed width
-    height: "3rem", // Fixed height
+    width: "6.2rem",
+    height: "3rem",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
     boxSizing: 'border-box',
-    flex: '0 0 auto', // Prevent flex-grow and flex-shrink
+    flex: '0 0 auto',
+    cursor: "pointer",
+    transition: 'background 0.3s ease',
+    '&:hover': {
+        background: 'linear-gradient(90deg, rgb(213, 76, 0) 8.38%, rgb(245, 102, 0) 52.76%,rgb(255, 146, 70) 100%)',
+    },
 }));
 
 
@@ -239,96 +245,127 @@ const ShowTimes = (props: IInfo) => {
                 <Grid container spacing={{ xs: 2, md: 3 }} >
                     {scheduleResponse?.map(response => (
                         <Grid item xs={12} md={4} key={response.theater._id}>
-                            <Box
-                                sx={{
-                                    position: "relative",
-                                    borderRadius: "0.625rem 0.625rem 0px 0px",
-                                    overflow: "hidden", // Ensures the overlay stays within the border radius
-                                    background: "linear-gradient(rgb(41, 41, 43) 0%, rgb(58, 56, 63) 100%))",
-                                    backgroundImage: 'url(/background/background2.png)',
-                                    backgroundSize: "cover",
-                                    backgroundRepeat: "no-repeat",
-                                    '&::before': {
-                                        content: '""',
-                                        position: "absolute",
-                                        top: 0,
-                                        left: 0,
-                                        width: "100%",
-                                        height: "100%",
-                                        backgroundColor: "rgba(0, 0, 0, 0.8)", // Adjust the opacity to make the image darker
-                                        zIndex: 1,
-                                    },
-                                }}
-                            >
-                                <Link href={`/theatres/${response.theater.name.toLowerCase()}-${response.theater._id}`} style={{ color: "#fff", textDecoration: "none", position: "relative", zIndex: 2 }}>
-                                    <Typography variant="h6" sx={{ fontWeight: 'bold', fontSize: "26px" }}>
-                                        {response.theater.name}
-                                    </Typography>
-                                </Link>
-                                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2, position: "relative", zIndex: 2 }}>
-                                    <LocationOnIcon sx={{ color: "rgb(255, 146, 70)" }} />
-                                    <Typography variant="body2" sx={{ ml: 1, color: "rgb(149, 145, 159)", fontWeight: "700" }}>
-                                        {response.theater.location}
-                                    </Typography>
-                                </Box>
-                            </Box>
-
-                            <Box>
-                                {response.formats.map(format => (
-                                    <Box>
-                                        <Box sx={{
-                                            display: "flex",
-                                            justifyContent: "space-between",
-                                            marginTop: "5px",
-                                            backgroundColor: "linear-gradient(rgb(41, 41, 43) 0%, rgb(58, 56, 63) 100%)"
-                                        }}>
-                                            <Typography sx={{
-                                                display: "flex",
-                                                flexWrap: "wrap",
-                                                position: "relative",
-                                                gap: "0px 1.125em",
-                                                overflow: "hidden",
-                                                marginRight: "0.5em",
-                                                color: "rgb(205, 204, 208)",
-                                                fontSize: "1.125rem",
-                                                fontWeight: "800",
-                                            }}>{format.format.toLocaleUpperCase()}
-                                            </Typography>
-
-                                            <Button sx={{
-                                                background: "rgb(26, 25, 29)",
-                                                borderRadius: "16px",
-                                                fontSize: "0.6875rem",
-                                                fontWeight: "800",
-                                                color: "rgb(149, 145, 159)",
-                                                height: "1.75rem",
-                                                letterSpacing: "0.025em",
-                                                cursor: "pointer",
-                                                boxSizing: "border-box"
-                                            }}
-                                                onClick={() => {
-                                                    setOpenShowTimesDetails(true)
-                                                }}
-                                            >
-                                                DETAILS
-                                            </Button>
-                                            <ShowtimeDetailsModal
-                                                open={openShowTimesDetails}
-                                                handleClose={handleCloseShowtimesMovieDetails}
-                                            />
-                                        </Box>
-                                        <Box sx={{ margin: "0.25rem 0px 0px -0.625rem", display: "flex", gap: "5px", flexWrap: "wrap" }}>
-                                            {format.schedules.map(schedule => (
-                                                <ScheduleButton>
-                                                    {schedule.time}
-                                                </ScheduleButton>
-                                            ))}
-
-                                        </Box>
+                            <Box sx={{ borderRadius: "0.625rem", backgroundColor: "rgb(58, 56, 63)", opacity: "1" }}>
+                                <Box
+                                    sx={{
+                                        position: "relative",
+                                        borderRadius: "0.625rem 0.625rem 0px 0px",
+                                        overflow: "hidden", // Ensures the overlay stays within the border radius
+                                        background: "linear-gradient(rgb(41, 41, 43) 0%, rgb(58, 56, 63) 100%))",
+                                        backgroundImage: 'url(/background/background2.png)',
+                                        backgroundSize: "cover",
+                                        backgroundRepeat: "no-repeat",
+                                        '&::before': {
+                                            content: '""',
+                                            position: "absolute",
+                                            top: 0,
+                                            left: 0,
+                                            width: "100%",
+                                            height: "100%",
+                                            backgroundColor: "rgba(0, 0, 0, 0.8)", // Adjust the opacity to make the image darker
+                                            zIndex: 1,
+                                        },
+                                    }}
+                                >
+                                    <Link href={`/theatres/${response.theater.name.toLowerCase()}-${response.theater._id}`} style={{ color: "#fff", textDecoration: "none", position: "relative", zIndex: 2 }}>
+                                        <Typography variant="h6" sx={{ fontWeight: 'bold', fontSize: "26px" }}>
+                                            {response.theater.name}
+                                        </Typography>
+                                    </Link>
+                                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 2, position: "relative", zIndex: 2 }}>
+                                        <LocationOnIcon sx={{ color: "rgb(255, 146, 70)" }} />
+                                        <Typography variant="body2" sx={{ ml: 1, color: "rgb(149, 145, 159)", fontWeight: "700" }}>
+                                            {response.theater.location}
+                                        </Typography>
                                     </Box>
-                                )
-                                )}
+                                </Box>
 
+                                <Box>
+                                    {response.formats.map(format => (
+                                        <Box sx={{
+                                            background: "linear-gradient(rgb(41, 41, 43) 0%, rgb(58, 56, 63) 100%)",
+                                        }}>
+                                            <Box sx={{
+                                                display: "flex",
+                                                justifyContent: "space-between",
+                                            }}>
+                                                <Typography sx={{
+                                                    display: "flex",
+                                                    flexWrap: "wrap",
+                                                    position: "relative",
+                                                    gap: "0px 1.125em",
+                                                    overflow: "hidden",
+                                                    marginRight: "0.5em",
+                                                    color: "rgb(205, 204, 208)",
+                                                    fontSize: "1.125rem",
+                                                    fontWeight: "800",
+                                                    marginTop: "5px"
+                                                }}>{format.format.toLocaleUpperCase()}
+                                                </Typography>
+
+                                                <Button sx={{
+                                                    marginTop: "5px",
+                                                    background: "rgb(26, 25, 29)",
+                                                    borderRadius: "16px",
+                                                    border: "none",
+                                                    fontSize: "0.8rem",
+                                                    fontWeight: "900",
+                                                    color: "rgb(149, 145, 159)",
+                                                    height: "1.75rem",
+                                                    letterSpacing: "0.025em",
+                                                    cursor: "pointer",
+                                                    boxSizing: "border-box"
+                                                }}
+                                                    onClick={() => {
+                                                        setOpenShowTimesDetails(true)
+                                                    }}
+                                                >
+                                                    DETAILS
+                                                </Button>
+                                                <ShowtimeDetailsModal
+                                                    open={openShowTimesDetails}
+                                                    handleClose={handleCloseShowtimesMovieDetails}
+                                                />
+                                            </Box>
+                                            <Box sx={{ display: "flex", gap: "7px", flexWrap: "wrap", }}>
+                                                {format.schedules.map(schedule => (
+                                                    <ScheduleButton onClick={() => router.push(`/select-ticket?site=${response.theater._id}&id=${schedule._id}`)}>
+                                                        {schedule.time}
+                                                    </ScheduleButton>
+                                                ))}
+                                            </Box>
+                                            <Box sx={{
+                                                display: "flex",
+
+                                                flexWrap: "wrap",
+                                                alignItems: "center",
+                                                marginTop: "6px",
+                                                letterSpacing: "0.025em",
+                                                color: "rgb(149, 145, 159)",
+                                            }}>
+                                                <ClosedCaptionIcon />
+                                                <HearingIcon />
+                                                <Typography
+                                                    sx={{
+                                                        marginLeft: "5px",
+                                                        fontSize: "0.9rem",
+                                                        fontWeight: "800",
+                                                    }}>
+                                                    • NO PASSES
+                                                </Typography>
+                                                <Typography sx={{
+                                                    marginLeft: "5px",
+                                                    fontSize: "0.9rem",
+                                                    fontWeight: "800",
+                                                }}>
+                                                    • STADIUM SEATING
+                                                </Typography>
+                                            </Box>
+                                        </Box>
+                                    )
+                                    )}
+
+                                </Box>
                             </Box>
                         </Grid>
                     ))}

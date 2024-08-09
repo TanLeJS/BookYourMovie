@@ -1,5 +1,6 @@
 import MovieDetail from "@/components/detail/page.detail";
 import { sendRequest } from "@/utils/api";
+import { Box } from "@mui/material";
 import { notFound } from "next/navigation";
 
 const DetailMoviePage = async ({ params }: { params: { slug: string } }) => {
@@ -31,12 +32,12 @@ const DetailMoviePage = async ({ params }: { params: { slug: string } }) => {
     const theaterList = theatersResponse.data;
 
     return (
-        <div>
+        <Box>
             <MovieDetail
                 movie={movieDetail}
                 theaterList={theaterList}
             />
-        </div>
+        </Box>
     );
 };
 
