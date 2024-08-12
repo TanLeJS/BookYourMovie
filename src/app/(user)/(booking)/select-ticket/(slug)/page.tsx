@@ -1,5 +1,5 @@
 
-import SelectTicketHeader from "@/components/select-ticket/header.page";
+import ScheduleInfo from "@/components/checkout/schedule.info";
 import { sendRequest } from "@/utils/api";
 import { Box } from "@mui/material";
 
@@ -22,7 +22,9 @@ const SelectTicket = async ({ searchParams, }: { searchParams: { [key: string]: 
     }
     return (
         <Box>
-            <SelectTicketHeader />
+            <ScheduleInfo
+                scheduleResponse={scheduleResponse}
+            />
         </Box>
     )
 }
