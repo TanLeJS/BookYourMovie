@@ -1,5 +1,6 @@
 
 import ScheduleInfo from "@/components/checkout/schedule.info";
+import TicketPurchase from "@/components/checkout/select-ticket";
 import { sendRequest } from "@/utils/api";
 import { Box } from "@mui/material";
 
@@ -25,6 +26,7 @@ const SelectTicket = async ({ searchParams, }: { searchParams: { [key: string]: 
             <ScheduleInfo
                 scheduleResponse={scheduleResponse}
             />
+            <TicketPurchase />
         </Box>
     )
 }

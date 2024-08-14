@@ -1,7 +1,7 @@
 "use client"
 
 import MovieIcon from '@mui/icons-material/Movie';
-import { Box, Container, Tab, Tabs, Typography } from '@mui/material';
+import { Box, Container, Link, Tab, Tabs, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { useState } from 'react';
 
@@ -35,12 +35,17 @@ const CheckOutHeader = () => {
                         display: "flex",
                         alignItems: "center"
                     }}>
-                        <MovieIcon sx={{
-                            marginRight: "10px"
-                        }} />
-                        <Typography variant="h6" sx={{ color: '#ff6600' }}>
-                            REGAL
-                        </Typography>
+                        <Link href="/" underline="none">
+                            <Box display="flex">
+                                <MovieIcon sx={{
+                                    marginRight: "10px"
+                                }} />
+                                <Typography variant="h6" sx={{ color: '#ff6600' }}>
+                                    REGAL
+                                </Typography>
+                            </Box>
+                        </Link>
+
                     </Box>
                     <Tabs value={value} onChange={handleChange} sx={{ borderBottom: 1, borderColor: 'divider' }}>
                         <CustomTab label="TICKETS" />

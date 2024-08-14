@@ -8,7 +8,6 @@ interface IUser {
   email: string;
   isVerify: boolean;
   type: string;
-  role: string;
 }
 
 declare module "next-auth/jwt" {
