@@ -39,7 +39,7 @@ const SignUp = (props: SignUpProps) => {
     const [isErrorConfirmedPassword, setIsErrorConfirmedPassword] = React.useState<boolean>(false)
     const [errorConfirmedPassword, setErrorConfirmedPassword] = React.useState<string>("")
 
-    const [isAgree, setIsAgree] = React.useState(true);
+    const [isAgree, setIsAgree] = React.useState(false);
 
     const toast = useToast();
     const router = useRouter();
