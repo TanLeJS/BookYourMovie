@@ -19,7 +19,7 @@ interface SignUpProps {
     setIsOpenSignUp: (isOpenSignUp: boolean) => void;
 }
 
-const SignUp = (props: SignUpProps) => {
+const CheckOutSignUp = (props: SignUpProps) => {
     const { isOpenSignUp, setIsOpenSignUp } = props
     const [showPassword, setShowPassword] = React.useState<boolean>(false)
     const [showConfirmedPassword, setShowConfirmedPassword] = React.useState<boolean>(false)
@@ -108,9 +108,6 @@ const SignUp = (props: SignUpProps) => {
 
     return (
         <Box>
-            <Button onClick={() => setIsOpenSignUp(true)}>
-                Sign Up
-            </Button>
             <Dialog open={isOpenSignUp} onClose={() => setIsOpenSignUp(false)} maxWidth={"sm"} fullWidth>
                 <DialogTitle>Create a new account</DialogTitle>
                 <DialogContent>
@@ -229,4 +226,4 @@ const SignUp = (props: SignUpProps) => {
     );
 }
 
-export default SignUp
+export default CheckOutSignUp

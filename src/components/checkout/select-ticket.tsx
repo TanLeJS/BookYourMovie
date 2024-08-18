@@ -5,13 +5,25 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ImportExportIcon from '@mui/icons-material/ImportExport';
 import MovieCreationIcon from '@mui/icons-material/MovieCreation';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
-import { Accordion, AccordionDetails, AccordionSlots, AccordionSummary, Box, Button, IconButton, Link, TextField, Typography } from '@mui/material';
+import { Accordion, AccordionDetails, AccordionSlots, AccordionSummary, Box, Button, IconButton, styled, TextField, Typography } from '@mui/material';
 import Fade from '@mui/material/Fade';
 import { signOut, useSession } from 'next-auth/react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import React from 'react';
-import SignUp from '../auth/signup';
+import React, { useEffect } from 'react';
 import CheckOutSignInModal from './checkout.signin';
+import CheckOutSignUp from './checkout.signup';
+
+const ConfirmButton = styled(Button)`
+  color: #f56600;
+  pointer-events: ${({ disabled }) => (disabled ? 'none' : 'auto')};
+  opacity: ${({ disabled }) => (disabled ? 0.5 : 1)};
+`;
+
+
+interface IScheduleDetail {
+    scheduleResponse: ISchedule
+}
 
 // Define types for ticket prices and counts
 type TicketType = 'Adult' | 'Senior' | 'Child';
@@ -22,11 +34,11 @@ const ticketPrices: Record<TicketType, number> = {
     Child: 17.49,
 };
 
-const TicketPurchase = () => {
+const TicketPurchase = (props: IScheduleDetail) => {
+    const schedule = props.scheduleResponse;
     const { data: session } = useSession();
     const router = useRouter();
     const toast = useToast()
-
 
     const [expanded, setExpanded] = React.useState(true);
     const [isOpenSignIn, setIsOpenSignIn] = React.useState(false);
@@ -78,15 +90,18 @@ const TicketPurchase = () => {
         signOut();
     };
 
-    const handleConfirmTicket = () => {
+    // const handleConfirmTicket = () => {
+    //     if (!session) {
+    //         toast.error("Please login to proceed to next step");
+    //         setIsOpenSignIn(true);
+    //     }
+    // }
+
+    useEffect(() => {
         if (!session) {
-            toast.error("Please login to proceed to next step")
-            setIsOpenSignIn(true)
+            setIsOpenSignIn(true);
         }
-        else {
-            router.push("/select-seat")
-        }
-    }
+    }, []);
 
 
     return (
@@ -103,15 +118,35 @@ const TicketPurchase = () => {
                     >
                         Hello {session?.user.email}
                     </Typography>
-                    <Box display="flex">
-                        <Typography variant="h5" gutterBottom>
-                            Not You
+                    <Box display="flex" sx={{ alignItems: "center" }} margin="0 1rem .5rem 0">
+                        <Typography sx={{
+                            fontSize: "1.1875rem",
+                            fontWeight: 700,
+                        }}>
+                            Not You?&nbsp;
                         </Typography>
-                        <Link onClick={() => handleLogOut()} />
+                        <Link href="" onClick={() => handleLogOut()}>
+                            <Typography sx={{
+                                fontSize: "1.1875rem",
+                                fontWeight: 700,
+                                color: "#f56600",
+                                border: "none",
+                                background: "0 0",
+                                textDecoration: "underline",
+                                padding: 0
+                            }}>
+                                Log Out
+                            </Typography>
+                        </Link>
                     </Box>
                 </Box>
             ) : (
                 <Box sx={{ color: 'black', fontWeight: 800 }}>
+                    <CheckOutSignInModal
+                        isOpenSignIn={isOpenSignIn}
+                        setIsOpenSignUp={setIsOpenSignUp}
+                        setIsOpenSignIn={setIsOpenSignIn}
+                    />
                     <Typography
                         sx={{
                             fontSize: '1.5rem',
@@ -155,7 +190,7 @@ const TicketPurchase = () => {
                             setIsOpenSignUp={setIsOpenSignUp}
                             setIsOpenSignIn={setIsOpenSignIn}
                         />
-                        <SignUp
+                        <CheckOutSignUp
                             isOpenSignUp={isOpenSignUp}
                             setIsOpenSignUp={setIsOpenSignUp}
                         />
@@ -240,7 +275,7 @@ const TicketPurchase = () => {
                             marginLeft: '0.5rem',
                             background: '#474747',
                             color: '#fff',
-                            fontSize: '1rem',
+                            fontSize: '0.875rem',
                             opacity: 1,
                             borderRadius: '4px',
                             alignItems: 'center',
@@ -249,7 +284,7 @@ const TicketPurchase = () => {
                             fontFamily: 'Exo,Helvetica,sans-serif',
                             textAlign: 'center',
                             lineHeight: 'normal',
-                            padding: '0.5rem 1rem',
+                            padding: '0.5rem 1rem 0.5rem 1rem',
                             display: 'inline-flex',
                             whiteSpace: 'nowrap',
                             '&:hover': {
@@ -372,9 +407,29 @@ const TicketPurchase = () => {
             </Typography>
 
             {/* Confirm Button */}
-            <Button fullWidth variant="contained" color="primary" disabled={totalTickets === 0} onClick={() => handleConfirmTicket()}>
-                Confirm Tickets
-            </Button>
+
+            <ConfirmButton
+                fullWidth
+                color='primary'
+                disabled={totalTickets === 0}
+            // onClick={handleConfirmTicket}
+            >
+                {totalTickets > 0 ? (
+                    <Link
+                        href={{
+                            pathname: '/select-seats',
+                            query: {
+                                scheduleID: schedule._id
+                            },
+                        }}
+                        style={{ textDecoration: 'none', color: 'inherit' }}
+                    >
+                        Confirm Tickets
+                    </Link>
+                ) : (
+                    'Confirm Tickets'
+                )}
+            </ConfirmButton>
 
         </Box >
     );

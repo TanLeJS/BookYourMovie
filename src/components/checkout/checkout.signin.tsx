@@ -53,7 +53,7 @@ const CheckOutSignInModal = (props: SignInProps) => {
             redirect: false
         })
         if (!res?.error) {
-            router.push("/")
+            router.push("")
         }
         else {
             setOpenMessage(true)
