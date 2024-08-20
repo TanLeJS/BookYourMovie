@@ -1,3 +1,5 @@
+import ScheduleInfo from "@/components/checkout/schedule.info";
+import SeatSelectorMainComponent from "@/components/checkout/seat/main.seatselector";
 import { sendRequest } from "@/utils/api";
 import { Box } from "@mui/material";
 
@@ -18,9 +20,13 @@ const SelectSeats = async ({ searchParams, }: { searchParams: { [key: string]: s
         error = err;
     }
 
-    console.log(scheduleResponse)
     return (
-        <Box> asdkjasdkasd</Box >
+        <Box>
+            <ScheduleInfo
+                scheduleResponse={scheduleResponse}
+            />
+            <SeatSelectorMainComponent scheduleResponse={scheduleResponse} />
+        </Box >
     )
 }
 

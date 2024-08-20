@@ -90,4 +90,10 @@ declare global {
     theater: ITheater;
     formats: IFormat[]; // Array of formats, each containing its schedules
   }
+
+  interface ISeat {
+    _id: string;
+    label: string;
+    status: string;
+  }
 }

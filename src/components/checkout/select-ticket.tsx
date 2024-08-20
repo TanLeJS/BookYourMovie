@@ -406,7 +406,6 @@ const TicketPurchase = (props: IScheduleDetail) => {
                 Prices may vary in theatre • Any applicable discounts applied at checkout • Terms and Conditions • Privacy Policy
             </Typography>
 
-            {/* Confirm Button */}
 
             <ConfirmButton
                 fullWidth
@@ -419,7 +418,9 @@ const TicketPurchase = (props: IScheduleDetail) => {
                         href={{
                             pathname: '/select-seats',
                             query: {
-                                scheduleID: schedule._id
+                                scheduleID: schedule._id,
+                                totalTickets: totalTickets,
+
                             },
                         }}
                         style={{ textDecoration: 'none', color: 'inherit' }}
