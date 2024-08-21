@@ -1,10 +1,12 @@
 import ScheduleInfo from "@/components/checkout/schedule.info";
-import SeatSelectorMainComponent from "@/components/checkout/seat/main.seatselector";
+import SeatSelector from "@/components/checkout/seat/seat.selector";
 import { sendRequest } from "@/utils/api";
 import { Box } from "@mui/material";
 
 const SelectSeats = async ({ searchParams, }: { searchParams: { [key: string]: string | string[] | undefined } }) => {
     const scheduleID = searchParams.scheduleID
+    const totalTickets = searchParams.totalTickets
+    const totalPrice = searchParams.totalPrice
     let scheduleResponse: ISchedule | null = null;
     let error = null;
     try {
@@ -23,9 +25,16 @@ const SelectSeats = async ({ searchParams, }: { searchParams: { [key: string]: s
     return (
         <Box>
             <ScheduleInfo
-                scheduleResponse={scheduleResponse}
+                scheduleResponse={scheduleResponse!}
             />
-            <SeatSelectorMainComponent scheduleResponse={scheduleResponse} />
+            <SeatSelector
+                //@ts-ignore
+                scheduleResponse={scheduleResponse}
+                //@ts-ignore
+                totalTickets={totalTickets}
+                //@ts-ignore
+                totalPrice={totalPrice}
+            />
         </Box >
     )
 }

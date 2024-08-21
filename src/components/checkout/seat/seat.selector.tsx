@@ -1,3 +1,7 @@
+"use client"
+
+import { useToast } from '@/utils/toast';
+import styled from '@emotion/styled';
 import BlockIcon from '@mui/icons-material/Block';
 import PersonIcon from '@mui/icons-material/Person';
 import { Box, Button, Container, Typography } from '@mui/material';
@@ -5,13 +9,22 @@ import { useState } from 'react';
 import Seat from './seat';
 
 interface ISeatSelector {
-    seats: ISeat[],
-    handleSeatSelect: (seats: ISeat[]) => void
+    scheduleResponse: ISchedule,
+    totalTickets: number,
+    totalPrice: number
 }
 
+const ConfirmButton = styled(Button)(({ theme }) => ({
+    background: '#f56600',
+}));
+
 const SeatSelector = (props: ISeatSelector) => {
-    const { seats, handleSeatSelect } = props
+    const schedule = props.scheduleResponse
+    const totalTickets = props.totalTickets
+    const totalPrice = props.totalPrice
     const [selectedSeats, setSelectedSeats] = useState([] as ISeat[]);
+    const seats = schedule.seats as ISeat[]
+    const toast = useToast()
 
     const handleSeatClick = (seat: ISeat) => {
         if (seat.status === 'booked') return;
@@ -19,13 +32,21 @@ const SeatSelector = (props: ISeatSelector) => {
         if (alreadySelected) {
             setSelectedSeats(selectedSeats.filter((s) => s.label !== seat.label));
         } else {
-            setSelectedSeats([...selectedSeats, seat]);
+            if (selectedSeats.length >= totalTickets) {
+                setSelectedSeats([...selectedSeats.slice(1), seat]);
+            } else {
+                setSelectedSeats([...selectedSeats, seat]);
+            }
+
         }
     };
 
     const handlePurchase = () => {
-        handleSeatSelect(selectedSeats);
-    };
+        if (selectedSeats.length < totalTickets) {
+            toast.error(`Please choose ${totalTickets} seats`)
+        }
+
+    }
 
     return (
         <Box>
@@ -197,12 +218,10 @@ const SeatSelector = (props: ISeatSelector) => {
                         alignItems="center"
                         width="100%"
                         justifyContent="center"
-                        my={2} // margin top & bottom
+                        my={2}
                     >
-                        {/* Left Line */}
                         <Box flex={1} height="4px" bgcolor="grey.400" />
 
-                        {/* "SCREEN" Text */}
                         <Typography
                             sx={{
                                 backgroundColor: '#b2b2b2',
@@ -218,19 +237,50 @@ const SeatSelector = (props: ISeatSelector) => {
                         >
                             SCREEN
                         </Typography>
-
-                        {/* Right Line */}
                         <Box flex={1} height="4px" bgcolor="grey.400" />
                     </Box>
 
                     <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(18, 1fr)', gap: '5px', marginBottom: '20px' }}>
                         {seats.map((seat) => (
-                            <Seat key={seat.label} seat={seat} selected={selectedSeats.includes(seat)} onClick={handleSeatClick} />
+                            <Seat key={seat.label} seat={seat} selected={selectedSeats.includes(seat)} handleSeatClick={handleSeatClick} />
                         ))}
                     </Box>
-                    <Button variant="contained" color="secondary" onClick={handlePurchase}>
-                        Confirm Seats
-                    </Button>
+                    <Box display="flex" alignItems="center" justifyContent="center">
+                        <Typography sx={{
+                            fontSize: "1.3125rem",
+                            fontWeight: 700,
+                            margin: "0.8rem",
+                            fontFamily: "Exo,Helvetica,sans-serif"
+                        }}>
+                            Select Seat(s):
+                        </Typography>
+                        <Typography sx={{
+                            fontSize: "1.3125rem",
+                            fontWeight: 700,
+                            fontFamily: "Exo,Helvetica,sans-serif"
+                        }}>
+                            {selectedSeats.length > 0
+                                ? selectedSeats.map((seat, index) =>
+                                    `${seat.label}${index < selectedSeats.length - 1 ? ', ' : ''}`
+                                ).join('')
+                                : ''}
+                        </Typography>
+                    </Box>
+                    <ConfirmButton sx={{
+                        cursor: "pointer",
+                        textAlign: "center",
+                        padding: "1rem 1.5rem"
+                    }}
+                        onClick={handlePurchase}
+                    >
+                        <Typography
+                            sx={{
+                                fontWeight: 600,
+                                color: "#fff"
+                            }}>
+                            CONFIRM SEATS
+                        </Typography>
+                    </ConfirmButton>
                 </Box>
             </Container>
         </Box >

@@ -14,11 +14,9 @@ import React, { useEffect } from 'react';
 import CheckOutSignInModal from './checkout.signin';
 import CheckOutSignUp from './checkout.signup';
 
-const ConfirmButton = styled(Button)`
-  color: #f56600;
-  pointer-events: ${({ disabled }) => (disabled ? 'none' : 'auto')};
-  opacity: ${({ disabled }) => (disabled ? 0.5 : 1)};
-`;
+const ConfirmButton = styled(Button)(({ theme }) => ({
+    background: '#f56600',
+}));
 
 
 interface IScheduleDetail {
@@ -68,6 +66,8 @@ const TicketPurchase = (props: IScheduleDetail) => {
 
     const totalPrice = Object.keys(ticketCounts).reduce(
         (total, ticketType) => total + ticketCounts[ticketType as TicketType] * (ticketPrices[ticketType as TicketType] * 1.07 + 1.89), 0);
+
+    const roundedTotalPrice = Math.round(totalPrice * 100) / 100;
 
     const handleIncrement = (ticketType: TicketType) => {
         if (totalTickets < 20) {
@@ -409,7 +409,6 @@ const TicketPurchase = (props: IScheduleDetail) => {
 
             <ConfirmButton
                 fullWidth
-                color='primary'
                 disabled={totalTickets === 0}
             // onClick={handleConfirmTicket}
             >
@@ -420,15 +419,24 @@ const TicketPurchase = (props: IScheduleDetail) => {
                             query: {
                                 scheduleID: schedule._id,
                                 totalTickets: totalTickets,
-
+                                totalPrice: roundedTotalPrice
                             },
                         }}
                         style={{ textDecoration: 'none', color: 'inherit' }}
                     >
-                        Confirm Tickets
+                        <Typography sx={{
+                            color: "#fff"
+                        }}>
+                            Confirm Tickets
+                        </Typography>
+
                     </Link>
                 ) : (
-                    'Confirm Tickets'
+                    <Typography sx={{
+                        color: "#fff"
+                    }}>
+                        Confirm Tickets
+                    </Typography>
                 )}
             </ConfirmButton>
 

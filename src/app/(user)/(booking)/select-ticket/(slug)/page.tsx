@@ -4,8 +4,9 @@ import TicketPurchase from "@/components/checkout/select-ticket";
 import { sendRequest } from "@/utils/api";
 import { Box } from "@mui/material";
 
-const SelectTicket = async ({ searchParams, }: { searchParams: { [key: string]: string | string[] | undefined } }) => {
+const SelectTicket = async ({ searchParams }: { searchParams: { [key: string]: string | string[] | undefined } }) => {
     const scheduleID = searchParams.id as string;
+
     let scheduleResponse: ISchedule | null = null;
     let error = null;
 
@@ -16,7 +17,7 @@ const SelectTicket = async ({ searchParams, }: { searchParams: { [key: string]: 
             method: "GET",
         });
         if (res && res.data) {
-            scheduleResponse = res.data;
+            scheduleResponse = res.data!;
         }
     } catch (err) {
         error = err;
@@ -24,10 +25,10 @@ const SelectTicket = async ({ searchParams, }: { searchParams: { [key: string]: 
     return (
         <Box>
             <ScheduleInfo
-                scheduleResponse={scheduleResponse}
+                scheduleResponse={scheduleResponse!}
             />
             <TicketPurchase
-                scheduleResponse={scheduleResponse} />
+                scheduleResponse={scheduleResponse!} />
         </Box>
     )
 }

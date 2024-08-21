@@ -1,25 +1,30 @@
 import PersonIcon from '@mui/icons-material/Person';
-import { Box } from '@mui/material';
+import { Box, Button, IconButton } from '@mui/material';
 
-const Seat = ({ seat, selected, onClick }) => {
+interface SeatProps {
+    seat: ISeat,
+    selected: boolean,
+    handleSeatClick: (seat: ISeat) => void;
+}
+
+const Seat = (props: SeatProps) => {
+    const { seat, selected, handleSeatClick } = props
+
     const getColor = () => {
-        if (selected) return 'orange';
+        if (selected) return '#f56600';
         switch (seat.status) {
             case 'available':
                 return '#000';
-            case 'booked':
-                return 'gray';
             default:
-                return 'gray';
+                return '#000';
         }
     };
 
     return (
         <Box>
             <Box
-                onClick={() => onClick(seat)}
+                onClick={() => handleSeatClick(seat)}
                 sx={{
-                    border: "none",
                     width: '1.6rem',
                     height: '1.42rem',
                     margin: '3px',
@@ -31,12 +36,25 @@ const Seat = ({ seat, selected, onClick }) => {
                     alignItems: 'center',
                     justifyContent: 'center',
                     padding: 0,
-                    cursor: seat.status === 'available' || seat.status === 'vip' ? 'pointer' : 'not-allowed',
+                    cursor: seat.status === 'available' ? 'pointer' : 'not-allowed',
                 }}
             >
+                <Button
+                    sx={{
+                        width: '100%',
+                        height: '100%',
+                        minWidth: 'unset',
+                        padding: 0,
+                        margin: 0,
+                        borderRadius: ".44rem .44rem .1rem .1rem",
+                        backgroundColor: 'transparent', // Ensure button background doesn't override box background
+                    }}
+                >
+                </Button>
                 {seat.status === 'booked' && (
-                    <PersonIcon
+                    <IconButton disabled
                         sx={{
+                            position: 'absolute',
                             width: '1.6rem',
                             height: '1.42rem',
                             borderRadius: ".44rem .44rem .1rem .1rem",
@@ -47,7 +65,9 @@ const Seat = ({ seat, selected, onClick }) => {
                             justifyContent: 'center',
                             padding: 0,
                         }}
-                    />
+                    >
+                        <PersonIcon />
+                    </IconButton>
                 )}
             </Box>
         </Box>
