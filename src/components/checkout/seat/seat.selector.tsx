@@ -45,7 +45,6 @@ const SeatSelector = (props: ISeatSelector) => {
         if (selectedSeats.length < totalTickets) {
             toast.error(`Please choose ${totalTickets} seats`)
         }
-
     }
 
     return (

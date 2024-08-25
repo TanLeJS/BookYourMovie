@@ -1,5 +1,4 @@
 "use client"
-import { useToast } from '@/utils/toast';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ImportExportIcon from '@mui/icons-material/ImportExport';
@@ -36,7 +35,7 @@ const TicketPurchase = (props: IScheduleDetail) => {
     const schedule = props.scheduleResponse;
     const { data: session } = useSession();
     const router = useRouter();
-    const toast = useToast()
+
 
     const [expanded, setExpanded] = React.useState(true);
     const [isOpenSignIn, setIsOpenSignIn] = React.useState(false);
@@ -52,6 +51,18 @@ const TicketPurchase = (props: IScheduleDetail) => {
         Child: 0,
     });
 
+    // Retrieve ticket counts from local storage on component mount
+    useEffect(() => {
+        const storedTicketCounts = localStorage.getItem('ticketCounts');
+        if (storedTicketCounts) {
+            setTicketCounts(JSON.parse(storedTicketCounts));
+        }
+    }, []);
+
+    // Update local storage whenever ticketCounts changes
+    useEffect(() => {
+        localStorage.setItem('ticketCounts', JSON.stringify(ticketCounts));
+    }, [ticketCounts]);
 
 
     const totalTickets = Object.values(ticketCounts).reduce((acc, count) => acc + count, 0);
