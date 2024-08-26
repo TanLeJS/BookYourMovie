@@ -1,5 +1,6 @@
 
 import ThemeRegistry from '@/components/theme-registry/theme.registry';
+import { TicketProvider } from '@/context/TicketContext';
 import NextAuthWrapper from '@/lib/next.auth.wrapper';
 import NProgressWrapper from '@/lib/nprogress.wrapper';
 
@@ -13,14 +14,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ThemeRegistry>
           <NextAuthWrapper>
             <NProgressWrapper>
-              <ToastProvider>
-                {children}
-              </ToastProvider>
+                <ToastProvider>
+                  {children}
+                </ToastProvider>
             </NProgressWrapper>
           </NextAuthWrapper>
         </ThemeRegistry>
-
-
       </body>
     </html>
   );

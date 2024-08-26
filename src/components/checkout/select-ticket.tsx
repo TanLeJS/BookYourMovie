@@ -51,7 +51,6 @@ const TicketPurchase = (props: IScheduleDetail) => {
         Child: 0,
     });
 
-    // Retrieve ticket counts from local storage on component mount
     useEffect(() => {
         const storedTicketCounts = localStorage.getItem('ticketCounts');
         if (storedTicketCounts) {
@@ -59,7 +58,6 @@ const TicketPurchase = (props: IScheduleDetail) => {
         }
     }, []);
 
-    // Update local storage whenever ticketCounts changes
     useEffect(() => {
         localStorage.setItem('ticketCounts', JSON.stringify(ticketCounts));
     }, [ticketCounts]);
