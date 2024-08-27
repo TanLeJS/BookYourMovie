@@ -1,5 +1,6 @@
 "use client"
 
+import { useTicketContext } from '@/context/TicketContext';
 import { useToast } from '@/utils/toast';
 import styled from '@emotion/styled';
 import BlockIcon from '@mui/icons-material/Block';
@@ -10,9 +11,14 @@ import Seat from './seat';
 
 interface ISeatSelector {
     scheduleResponse: ISchedule,
-    totalTickets: number,
-    totalPrice: number
 }
+
+interface TicketCounts {
+    Adult: number;
+    Senior: number;
+    Child: number;
+}
+
 
 const ConfirmButton = styled(Button)(({ theme }) => ({
     background: '#f56600',
@@ -20,11 +26,12 @@ const ConfirmButton = styled(Button)(({ theme }) => ({
 
 const SeatSelector = (props: ISeatSelector) => {
     const schedule = props.scheduleResponse
-    const totalTickets = props.totalTickets
-    const totalPrice = props.totalPrice
     const [selectedSeats, setSelectedSeats] = useState([] as ISeat[]);
     const seats = schedule.seats as ISeat[]
     const toast = useToast()
+    const { ticketCounts, setTicketCounts } = useTicketContext();
+
+    const totalTickets = ticketCounts.Adult + ticketCounts.Child + ticketCounts.Senior
 
     const handleSeatClick = (seat: ISeat) => {
         if (seat.status === 'booked') return;
@@ -241,7 +248,12 @@ const SeatSelector = (props: ISeatSelector) => {
 
                     <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(18, 1fr)', gap: '5px', marginBottom: '20px' }}>
                         {seats.map((seat) => (
-                            <Seat key={seat.label} seat={seat} selected={selectedSeats.includes(seat)} handleSeatClick={handleSeatClick} />
+                            <Seat
+                                key={seat.label}
+                                seat={seat}
+                                selected={selectedSeats.includes(seat)}
+                                handleSeatClick={handleSeatClick}
+                            />
                         ))}
                     </Box>
                     <Box display="flex" alignItems="center" justifyContent="center">

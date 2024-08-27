@@ -5,8 +5,6 @@ import { Box } from "@mui/material";
 
 const SelectSeats = async ({ searchParams, }: { searchParams: { [key: string]: string | string[] | undefined } }) => {
     const scheduleID = searchParams.scheduleID
-    const totalTickets = searchParams.totalTickets
-    const totalPrice = searchParams.totalPrice
     let scheduleResponse: ISchedule | null = null;
     let error = null;
     try {
@@ -30,10 +28,7 @@ const SelectSeats = async ({ searchParams, }: { searchParams: { [key: string]: s
             <SeatSelector
                 //@ts-ignore
                 scheduleResponse={scheduleResponse}
-                //@ts-ignore
-                totalTickets={totalTickets}
-                //@ts-ignore
-                totalPrice={totalPrice}
+
             />
         </Box >
     )

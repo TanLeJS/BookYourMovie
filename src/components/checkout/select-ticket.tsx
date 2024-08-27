@@ -1,4 +1,5 @@
 "use client"
+import { useTicketContext } from '@/context/TicketContext';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ImportExportIcon from '@mui/icons-material/ImportExport';
@@ -17,13 +18,14 @@ const ConfirmButton = styled(Button)(({ theme }) => ({
     background: '#f56600',
 }));
 
-
 interface IScheduleDetail {
     scheduleResponse: ISchedule
 }
 
 // Define types for ticket prices and counts
 type TicketType = 'Adult' | 'Senior' | 'Child';
+
+
 
 const ticketPrices: Record<TicketType, number> = {
     Adult: 19.99,
@@ -36,7 +38,6 @@ const TicketPurchase = (props: IScheduleDetail) => {
     const { data: session } = useSession();
     const router = useRouter();
 
-
     const [expanded, setExpanded] = React.useState(true);
     const [isOpenSignIn, setIsOpenSignIn] = React.useState(false);
     const [isOpenSignUp, setIsOpenSignUp] = React.useState(false);
@@ -45,38 +46,64 @@ const TicketPurchase = (props: IScheduleDetail) => {
         setExpanded((prevExpanded) => !prevExpanded);
     };
 
-    const [ticketCounts, setTicketCounts] = React.useState<Record<TicketType, number>>({
-        Adult: 0,
-        Senior: 0,
-        Child: 0,
-    });
+    const { ticketCounts, setTicketCounts } = useTicketContext();
+
 
     useEffect(() => {
-        const storedTicketCounts = localStorage.getItem('ticketCounts');
+        const storedTicketCounts = sessionStorage.getItem('ticketCounts');
         if (storedTicketCounts) {
             setTicketCounts(JSON.parse(storedTicketCounts));
         }
     }, []);
 
     useEffect(() => {
-        localStorage.setItem('ticketCounts', JSON.stringify(ticketCounts));
+        sessionStorage.setItem('ticketCounts', JSON.stringify(ticketCounts));
     }, [ticketCounts]);
 
 
+    useEffect(() => {
+        sessionStorage.setItem('ticketCounts', JSON.stringify(ticketCounts));
+        const totalTickets = Object.values(ticketCounts).reduce((acc, count) => acc + count, 0);
+        const fees = (1.89 * totalTickets).toFixed(2);
+        const admissionFees = Object.keys(ticketCounts).reduce((total, ticketType) => {
+            const type = ticketType as TicketType; // Cast to TicketType
+            return total + ticketCounts[type] * ticketPrices[type];
+        }, 0);
+
+        const roundedAdmissionFees = Math.round(admissionFees * 100) / 100;
+        const taxes = (roundedAdmissionFees * 0.07).toFixed(2);
+
+        const totalPrice = Object.keys(ticketCounts).reduce((total, ticketType) => {
+            const type = ticketType as TicketType; // Cast to TicketType
+            return total + ticketCounts[type] * (ticketPrices[type] * 1.07 + 1.89);
+        }, 0);
+
+        const roundedTotalPrice = Math.round(totalPrice * 100) / 100;
+
+        // Store these calculated values in session storage
+        sessionStorage.setItem('fees', fees);
+        sessionStorage.setItem('admissionFees', roundedAdmissionFees.toString());
+        sessionStorage.setItem('taxes', taxes);
+        sessionStorage.setItem('totalPrice', roundedTotalPrice.toString());
+    }, [ticketCounts]);
+
     const totalTickets = Object.values(ticketCounts).reduce((acc, count) => acc + count, 0);
     const fees = (1.89 * totalTickets).toFixed(2);
-    const admissionFees = Object.keys(ticketCounts).reduce(
-        (total, ticketType) => total + ticketCounts[ticketType as TicketType] * ticketPrices[ticketType as TicketType], 0
-    );
+    const admissionFees = Object.keys(ticketCounts).reduce((total, ticketType) => {
+        const type = ticketType as TicketType; // Cast to TicketType
+        return total + ticketCounts[type] * ticketPrices[type];
+    }, 0);
 
     const roundedAdmissionFees = Math.round(admissionFees * 100) / 100;
-
     const taxes = (roundedAdmissionFees * 0.07).toFixed(2);
 
-    const totalPrice = Object.keys(ticketCounts).reduce(
-        (total, ticketType) => total + ticketCounts[ticketType as TicketType] * (ticketPrices[ticketType as TicketType] * 1.07 + 1.89), 0);
+    const totalPrice = Object.keys(ticketCounts).reduce((total, ticketType) => {
+        const type = ticketType as TicketType; // Cast to TicketType
+        return total + ticketCounts[type] * (ticketPrices[type] * 1.07 + 1.89);
+    }, 0);
 
     const roundedTotalPrice = Math.round(totalPrice * 100) / 100;
+
 
     const handleIncrement = (ticketType: TicketType) => {
         if (totalTickets < 20) {
@@ -99,12 +126,6 @@ const TicketPurchase = (props: IScheduleDetail) => {
         signOut();
     };
 
-    // const handleConfirmTicket = () => {
-    //     if (!session) {
-    //         toast.error("Please login to proceed to next step");
-    //         setIsOpenSignIn(true);
-    //     }
-    // }
 
     useEffect(() => {
         if (!session) {
@@ -405,7 +426,7 @@ const TicketPurchase = (props: IScheduleDetail) => {
             {/* Cart Summary */}
             <Box sx={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
                 <Typography sx={{ fontSize: "1.5em", fontWeight: 700, fontFamily: "Exo, Helvetica, sans-serif" }}>Cart</Typography>
-                <Typography sx={{ fontSize: "1.6rem", fontWeight: 500, fontFamily: "Exo, Helvetica, sans-serif" }}>${totalPrice.toFixed(2)}</Typography>
+                <Typography sx={{ fontSize: "1.6rem", fontWeight: 500, fontFamily: "Exo, Helvetica, sans-serif" }}>${roundedTotalPrice.toFixed(2)}</Typography>
             </Box>
             <Typography sx={{ fontSize: "16px", fontWeight: 600, fontFamily: "Exo, Helvetica, sans-serif" }}>
                 Admission ${roundedAdmissionFees} + Fees ${fees} + Taxes ${taxes}
@@ -419,7 +440,6 @@ const TicketPurchase = (props: IScheduleDetail) => {
             <ConfirmButton
                 fullWidth
                 disabled={totalTickets === 0}
-            // onClick={handleConfirmTicket}
             >
                 {totalTickets > 0 ? (
                     <Link
@@ -427,8 +447,6 @@ const TicketPurchase = (props: IScheduleDetail) => {
                             pathname: '/select-seats',
                             query: {
                                 scheduleID: schedule._id,
-                                totalTickets: totalTickets,
-                                totalPrice: roundedTotalPrice
                             },
                         }}
                         style={{ textDecoration: 'none', color: 'inherit' }}

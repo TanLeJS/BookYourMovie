@@ -48,7 +48,7 @@ export const TicketProvider = ({ children }: { children: React.ReactNode }) => {
 
   // Load the ticket counts from localStorage on mount
   useEffect(() => {
-    const storedTicketCounts = localStorage.getItem("ticketCounts");
+    const storedTicketCounts = sessionStorage.getItem("ticketCounts");
     if (storedTicketCounts) {
       setTicketCounts(JSON.parse(storedTicketCounts));
     }
@@ -56,7 +56,7 @@ export const TicketProvider = ({ children }: { children: React.ReactNode }) => {
 
   // Save the ticket counts to localStorage on change
   useEffect(() => {
-    localStorage.setItem("ticketCounts", JSON.stringify(ticketCounts));
+    sessionStorage.setItem("ticketCounts", JSON.stringify(ticketCounts));
   }, [ticketCounts]);
 
   return (

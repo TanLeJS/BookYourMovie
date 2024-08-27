@@ -14,9 +14,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ThemeRegistry>
           <NextAuthWrapper>
             <NProgressWrapper>
+              <TicketProvider>
                 <ToastProvider>
                   {children}
                 </ToastProvider>
+              </TicketProvider>
             </NProgressWrapper>
           </NextAuthWrapper>
         </ThemeRegistry>
