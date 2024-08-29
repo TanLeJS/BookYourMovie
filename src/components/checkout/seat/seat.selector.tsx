@@ -6,7 +6,8 @@ import styled from '@emotion/styled';
 import BlockIcon from '@mui/icons-material/Block';
 import PersonIcon from '@mui/icons-material/Person';
 import { Box, Button, Container, Typography } from '@mui/material';
-import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import Seat from './seat';
 
 interface ISeatSelector {
@@ -30,8 +31,21 @@ const SeatSelector = (props: ISeatSelector) => {
     const seats = schedule.seats as ISeat[]
     const toast = useToast()
     const { ticketCounts, setTicketCounts } = useTicketContext();
-
+    const router = useRouter()
     const totalTickets = ticketCounts.Adult + ticketCounts.Child + ticketCounts.Senior
+
+    // Load selected seats from session storage when the component mounts
+    useEffect(() => {
+        const storedSeats = sessionStorage.getItem('selectedSeats');
+        if (storedSeats) {
+            setSelectedSeats(JSON.parse(storedSeats));
+        }
+    }, []);
+
+    // Save selected seats to session storage whenever it changes
+    useEffect(() => {
+        sessionStorage.setItem('selectedSeats', JSON.stringify(selectedSeats));
+    }, [selectedSeats]);
 
     const handleSeatClick = (seat: ISeat) => {
         if (seat.status === 'booked') return;
@@ -44,13 +58,15 @@ const SeatSelector = (props: ISeatSelector) => {
             } else {
                 setSelectedSeats([...selectedSeats, seat]);
             }
-
         }
     };
 
     const handlePurchase = () => {
         if (selectedSeats.length < totalTickets) {
             toast.error(`Please choose ${totalTickets} seats`)
+        }
+        else {
+            router.push(`/checkout?scheduleID=${schedule._id}`)
         }
     }
 

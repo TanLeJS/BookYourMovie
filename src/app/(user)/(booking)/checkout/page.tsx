@@ -1,15 +1,12 @@
-
+import Payment from "@/components/checkout/payment";
 import ScheduleInfo from "@/components/checkout/schedule.info";
-import TicketPurchase from "@/components/checkout/select-ticket";
 import { sendRequest } from "@/utils/api";
 import { Box } from "@mui/material";
 
-const SelectTicket = async ({ searchParams }: { searchParams: { [key: string]: string | string[] | undefined } }) => {
-    const scheduleID = searchParams.id as string;
-
+const CheckOut = async ({ searchParams, }: { searchParams: { [key: string]: string | string[] | undefined } }) => {
+    const scheduleID = searchParams.scheduleID
     let scheduleResponse: ISchedule | null = null;
     let error = null;
-
     try {
         const url = new URL(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/schedules/${scheduleID}`);
         const res = await sendRequest<IBackendRes<ISchedule>>({
@@ -17,7 +14,7 @@ const SelectTicket = async ({ searchParams }: { searchParams: { [key: string]: s
             method: "GET",
         });
         if (res && res.data) {
-            scheduleResponse = res.data!;
+            scheduleResponse = res.data;
         }
     } catch (err) {
         error = err;
@@ -28,10 +25,11 @@ const SelectTicket = async ({ searchParams }: { searchParams: { [key: string]: s
             <ScheduleInfo
                 scheduleResponse={scheduleResponse!}
             />
-            <TicketPurchase
-                scheduleResponse={scheduleResponse!} />
-        </Box>
+            <Payment
+                scheduleResponse={scheduleResponse!}
+            />
+        </Box >
     )
 }
 
-export default SelectTicket
+export default CheckOut

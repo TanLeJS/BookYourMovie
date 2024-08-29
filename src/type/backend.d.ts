@@ -79,6 +79,11 @@ declare global {
       label: string;
       status: string;
     }[];
+    ticketPrices: {
+      Adult: number;
+      Senior: number;
+      Child: number;
+    };
   }
 
   interface IFormat {

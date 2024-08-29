@@ -26,13 +26,6 @@ interface IScheduleDetail {
 type TicketType = 'Adult' | 'Senior' | 'Child';
 
 
-
-const ticketPrices: Record<TicketType, number> = {
-    Adult: 19.99,
-    Senior: 17.99,
-    Child: 17.49,
-};
-
 const TicketPurchase = (props: IScheduleDetail) => {
     const schedule = props.scheduleResponse;
     const { data: session } = useSession();
@@ -42,12 +35,11 @@ const TicketPurchase = (props: IScheduleDetail) => {
     const [isOpenSignIn, setIsOpenSignIn] = React.useState(false);
     const [isOpenSignUp, setIsOpenSignUp] = React.useState(false);
 
+    const { ticketCounts, setTicketCounts } = useTicketContext();
+
     const handleExpansion = () => {
         setExpanded((prevExpanded) => !prevExpanded);
     };
-
-    const { ticketCounts, setTicketCounts } = useTicketContext();
-
 
     useEffect(() => {
         if (schedule) {
@@ -75,7 +67,7 @@ const TicketPurchase = (props: IScheduleDetail) => {
         const fees = (1.89 * totalTickets).toFixed(2);
         const admissionFees = Object.keys(ticketCounts).reduce((total, ticketType) => {
             const type = ticketType as TicketType; // Cast to TicketType
-            return total + ticketCounts[type] * ticketPrices[type];
+            return total + ticketCounts[type] * schedule.ticketPrices[type];
         }, 0);
 
         const roundedAdmissionFees = Math.round(admissionFees * 100) / 100;
@@ -83,15 +75,15 @@ const TicketPurchase = (props: IScheduleDetail) => {
 
         const totalPrice = Object.keys(ticketCounts).reduce((total, ticketType) => {
             const type = ticketType as TicketType; // Cast to TicketType
-            return total + ticketCounts[type] * (ticketPrices[type] * 1.07 + 1.89);
+            return total + ticketCounts[type] * (schedule.ticketPrices[type] * 1.07 + 1.89);
         }, 0);
 
         const roundedTotalPrice = Math.round(totalPrice * 100) / 100;
 
         // Store these calculated values in session storage
-        sessionStorage.setItem('fees', fees);
+        sessionStorage.setItem('fees', fees.toString());
         sessionStorage.setItem('admissionFees', roundedAdmissionFees.toString());
-        sessionStorage.setItem('taxes', taxes);
+        sessionStorage.setItem('taxes', taxes.toString());
         sessionStorage.setItem('totalPrice', roundedTotalPrice.toString());
     }, [ticketCounts]);
 
@@ -99,7 +91,7 @@ const TicketPurchase = (props: IScheduleDetail) => {
     const fees = (1.89 * totalTickets).toFixed(2);
     const admissionFees = Object.keys(ticketCounts).reduce((total, ticketType) => {
         const type = ticketType as TicketType; // Cast to TicketType
-        return total + ticketCounts[type] * ticketPrices[type];
+        return total + ticketCounts[type] * schedule.ticketPrices[type];
     }, 0);
 
     const roundedAdmissionFees = Math.round(admissionFees * 100) / 100;
@@ -107,7 +99,7 @@ const TicketPurchase = (props: IScheduleDetail) => {
 
     const totalPrice = Object.keys(ticketCounts).reduce((total, ticketType) => {
         const type = ticketType as TicketType; // Cast to TicketType
-        return total + ticketCounts[type] * (ticketPrices[type] * 1.07 + 1.89);
+        return total + ticketCounts[type] * (schedule.ticketPrices[type] * 1.07 + 1.89);
     }, 0);
 
     const roundedTotalPrice = Math.round(totalPrice * 100) / 100;
@@ -352,7 +344,7 @@ const TicketPurchase = (props: IScheduleDetail) => {
             >
                 Select Tickets
             </Typography>
-            {(['Adult', 'Senior', 'Child'] as TicketType[]).map((ticketType) => (
+            {(Object.keys(schedule.ticketPrices) as TicketType[]).map((ticketType) => (
                 <Box key={ticketType} sx={{
                     height: "5.875rem",
                     display: 'flex',
@@ -387,15 +379,13 @@ const TicketPurchase = (props: IScheduleDetail) => {
                             position: "relative"
                         }}>
                             <Box display="block">
-
-
                                 <Typography
                                     sx={{
                                         fontSize: "1.19rem",
                                         fontWeight: 550,
                                         lineHeight: "1.4375rem",
                                     }}>
-                                    ${ticketPrices[ticketType].toFixed(2)}
+                                    ${schedule.ticketPrices[ticketType].toFixed(2)}
                                 </Typography>
                                 <Typography sx={{
                                     fontSize: "12px",
