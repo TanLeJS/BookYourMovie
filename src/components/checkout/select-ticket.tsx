@@ -50,6 +50,14 @@ const TicketPurchase = (props: IScheduleDetail) => {
 
 
     useEffect(() => {
+        if (schedule) {
+            // Convert the schedule object to a JSON string before storing it
+            localStorage.setItem('schedule', JSON.stringify(schedule));
+        }
+    }, [schedule]);
+
+
+    useEffect(() => {
         const storedTicketCounts = sessionStorage.getItem('ticketCounts');
         if (storedTicketCounts) {
             setTicketCounts(JSON.parse(storedTicketCounts));
@@ -103,6 +111,10 @@ const TicketPurchase = (props: IScheduleDetail) => {
     }, 0);
 
     const roundedTotalPrice = Math.round(totalPrice * 100) / 100;
+
+    const handleConfirm = () => {
+        router.push(`/select-seats?scheduleID=${schedule._id}`)
+    }
 
 
     const handleIncrement = (ticketType: TicketType) => {
@@ -440,24 +452,15 @@ const TicketPurchase = (props: IScheduleDetail) => {
             <ConfirmButton
                 fullWidth
                 disabled={totalTickets === 0}
+                onClick={() => handleConfirm()}
             >
                 {totalTickets > 0 ? (
-                    <Link
-                        href={{
-                            pathname: '/select-seats',
-                            query: {
-                                scheduleID: schedule._id,
-                            },
-                        }}
-                        style={{ textDecoration: 'none', color: 'inherit' }}
-                    >
-                        <Typography sx={{
-                            color: "#fff"
-                        }}>
-                            Confirm Tickets
-                        </Typography>
 
-                    </Link>
+                    <Typography sx={{
+                        color: "#fff"
+                    }}>
+                        Confirm Tickets
+                    </Typography>
                 ) : (
                     <Typography sx={{
                         color: "#fff"

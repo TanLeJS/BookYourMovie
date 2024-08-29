@@ -11,14 +11,13 @@ const Seat = (props: SeatProps) => {
     const { seat, selected, handleSeatClick } = props
 
     const getColor = () => {
-        if (selected) return '#f56600';
+        if (selected) return '#f56600'; // This should be orange for selected seats
         switch (seat.status) {
             case 'available':
-                return '#000';
-            default:
-                return '#000';
+                return '#000'; // Black for available seats
         }
     };
+
 
     return (
         <Box>
