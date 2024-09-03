@@ -3,6 +3,7 @@ import ScheduleInfo from "@/components/checkout/schedule.info";
 import { sendRequest } from "@/utils/api";
 import { Box } from "@mui/material";
 
+
 const CheckOut = async ({ searchParams, }: { searchParams: { [key: string]: string | string[] | undefined } }) => {
     const scheduleID = searchParams.scheduleID
     let scheduleResponse: ISchedule | null = null;
@@ -19,6 +20,8 @@ const CheckOut = async ({ searchParams, }: { searchParams: { [key: string]: stri
     } catch (err) {
         error = err;
     }
+
+
 
     return (
         <Box>
