@@ -1,6 +1,7 @@
 "use client"
 
 import { useTicketContext } from "@/context/TicketContext";
+import { useToast } from "@/utils/toast";
 import { Box, Divider, Typography } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -16,6 +17,7 @@ type TicketType = 'Adult' | 'Senior' | 'Child';
 const Payment = (props: IScheduleDetail) => {
     const schedule = props.scheduleResponse;
     const { ticketCounts } = useTicketContext();
+    const toast = useToast()
     const router = useRouter();
 
 
@@ -55,7 +57,8 @@ const Payment = (props: IScheduleDetail) => {
     }
 
     const handleSuccess = () => {
-        router.push('/');
+        toast.success("Created the order");
+
     };
 
     const handleError = (error: any) => {
@@ -177,7 +180,7 @@ const Payment = (props: IScheduleDetail) => {
                     {/* Add payment method components here */}
 
                 </Box>
-                <PayPalPaymentButton amount={50} paypalClientId={paypalClientId} onSuccess={handleSuccess} onError={handleError} />
+                <PayPalPaymentButton amount={totalPrice} paypalClientId={paypalClientId} onSuccess={handleSuccess} onError={handleError} />
             </Box>
         </Box>
     );
