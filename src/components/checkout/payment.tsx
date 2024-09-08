@@ -2,12 +2,15 @@
 
 import { useTicketContext } from "@/context/TicketContext";
 import { useToast } from "@/utils/toast";
-import { Box, Divider, Typography } from "@mui/material";
+import styled from "@emotion/styled";
+import { Box, Button, Divider, Typography } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import PayPalPaymentButton from "./paypal/paypal-button";
 
-
+const ConfirmButton = styled(Button)(({ theme }) => ({
+    background: '#f56600',
+}));
 
 interface IScheduleDetail {
     scheduleResponse: ISchedule
@@ -16,7 +19,7 @@ type TicketType = 'Adult' | 'Senior' | 'Child';
 
 const Payment = (props: IScheduleDetail) => {
     const schedule = props.scheduleResponse;
-    const { ticketCounts } = useTicketContext();
+    const { ticketCounts, selectedSeats } = useTicketContext();
     const toast = useToast()
     const router = useRouter();
 
@@ -26,6 +29,8 @@ const Payment = (props: IScheduleDetail) => {
     const [taxes, setTaxes] = useState<string | null>(null);
     const [admissionFees, setAdmissionFees] = useState<string | null>(null);
     const [paypalClientId, setPaypalClientId] = useState<string | null>(null);
+
+
 
     useEffect(() => {
         // Ensure we're in the browser before accessing sessionStorage
@@ -65,6 +70,9 @@ const Payment = (props: IScheduleDetail) => {
         console.error('Payment error:', error);
     };
 
+    const handleFinishPayment = () => {
+        router.push("")
+    }
 
     return (
         <Box>
@@ -180,7 +188,30 @@ const Payment = (props: IScheduleDetail) => {
                     {/* Add payment method components here */}
 
                 </Box>
-                <PayPalPaymentButton amount={totalPrice} paypalClientId={paypalClientId} onSuccess={handleSuccess} onError={handleError} />
+                <PayPalPaymentButton
+                    amount={totalPrice}
+                    selectedSeats={selectedSeats}
+                    paypalClientId={paypalClientId}
+                    onSuccess={handleSuccess}
+                    onError={handleError} />
+                <ConfirmButton
+                    fullWidth
+                    sx={{
+                        cursor: "pointer",
+                        textAlign: "center",
+                        padding: "1rem 1.5rem",
+                        marginTop: "2rem"
+                    }}
+                    onClick={handleFinishPayment}
+                >
+                    <Typography
+                        sx={{
+                            fontWeight: 600,
+                            color: "#fff"
+                        }}>
+                        CONFIRM ORDER FOR ${totalPrice}
+                    </Typography>
+                </ConfirmButton>
             </Box>
         </Box>
     );

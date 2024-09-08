@@ -7,7 +7,6 @@ import BlockIcon from '@mui/icons-material/Block';
 import PersonIcon from '@mui/icons-material/Person';
 import { Box, Button, Container, Typography } from '@mui/material';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
 import Seat from './seat';
 
 interface ISeatSelector {
@@ -27,25 +26,11 @@ const ConfirmButton = styled(Button)(({ theme }) => ({
 
 const SeatSelector = (props: ISeatSelector) => {
     const schedule = props.scheduleResponse
-    const [selectedSeats, setSelectedSeats] = useState([] as ISeat[]);
+    const { ticketCounts, setTicketCounts, selectedSeats, setSelectedSeats } = useTicketContext();
     const seats = schedule.seats as ISeat[]
     const toast = useToast()
-    const { ticketCounts, setTicketCounts } = useTicketContext();
     const router = useRouter()
     const totalTickets = ticketCounts.Adult + ticketCounts.Child + ticketCounts.Senior
-
-    // Load selected seats from session storage when the component mounts
-    useEffect(() => {
-        const storedSeats = sessionStorage.getItem('selectedSeats');
-        if (storedSeats) {
-            setSelectedSeats(JSON.parse(storedSeats));
-        }
-    }, []);
-
-    // Save selected seats to session storage whenever it changes
-    useEffect(() => {
-        sessionStorage.setItem('selectedSeats', JSON.stringify(selectedSeats));
-    }, [selectedSeats]);
 
     const handleSeatClick = (seat: ISeat) => {
         if (seat.status === 'booked') return;

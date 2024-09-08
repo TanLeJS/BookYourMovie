@@ -1,4 +1,5 @@
 'use client';
+import { useToast } from '@/utils/toast';
 import { Box } from '@mui/material';
 import { PayPalButtons, PayPalScriptProvider } from '@paypal/react-paypal-js';
 import React from 'react';
@@ -8,9 +9,13 @@ interface PayPalPaymentButtonProps {
     paypalClientId: string | null;
     onSuccess: () => void;
     onError: (err: any) => void;
+    selectedSeats: ISeat[]
 }
 
-const PaypalPaymentButton: React.FC<PayPalPaymentButtonProps> = ({ amount, paypalClientId, onSuccess, onError }) => {
+const PaypalPaymentButton: React.FC<PayPalPaymentButtonProps> = ({ amount, paypalClientId, onSuccess, onError, selectedSeats }) => {
+    const toast = useToast()
+
+
     const createOrder = () => {
         return fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/paypal/orders`, {
             method: "POST",
@@ -22,8 +27,8 @@ const PaypalPaymentButton: React.FC<PayPalPaymentButtonProps> = ({ amount, paypa
             body: JSON.stringify({
                 cart: [
                     {
-                        sku: "1blwyeo8",
-                        quantity: 2,
+                        amount: amount,
+                        selectedSeats: selectedSeats
                     },
                 ],
             }),
@@ -36,7 +41,8 @@ const PaypalPaymentButton: React.FC<PayPalPaymentButtonProps> = ({ amount, paypa
     }
 
 
-    const onApprove = (data) => {
+
+    const onApprove = (data: any) => {
         return fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/paypal/orders/capture`, {
             method: "POST",
             headers: {
@@ -48,12 +54,11 @@ const PaypalPaymentButton: React.FC<PayPalPaymentButtonProps> = ({ amount, paypa
         })
             .then((response) => response.json())
             .then((orderData) => {
+                console.log(orderData)
                 const name = orderData.payer.name.given_name;
-                alert(`Transaction completed by ${name}`);
+                toast.success(`Transaction completed by ${name}`)
             });
     }
-
-
 
     return (
         <Box style={{ maxWidth: '750px', minHeight: '200px' }}>
