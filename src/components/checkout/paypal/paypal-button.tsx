@@ -7,12 +7,13 @@ import React from 'react';
 interface PayPalPaymentButtonProps {
     amount: number;
     paypalClientId: string | null;
-    onSuccess: () => void;
-    onError: (err: any) => void;
     selectedSeats: ISeat[]
+    // onSuccess: () => void;
+    // onError: (err: any) => void;
+    // schedule: ISchedule
 }
 
-const PaypalPaymentButton: React.FC<PayPalPaymentButtonProps> = ({ amount, paypalClientId, onSuccess, onError, selectedSeats }) => {
+const PaypalPaymentButton: React.FC<PayPalPaymentButtonProps> = ({ amount, paypalClientId, selectedSeats }) => {
     const toast = useToast()
 
 
@@ -28,7 +29,7 @@ const PaypalPaymentButton: React.FC<PayPalPaymentButtonProps> = ({ amount, paypa
                 cart: [
                     {
                         amount: amount,
-                        selectedSeats: selectedSeats
+                        selectedSeats: selectedSeats,
                     },
                 ],
             }),
@@ -54,7 +55,6 @@ const PaypalPaymentButton: React.FC<PayPalPaymentButtonProps> = ({ amount, paypa
         })
             .then((response) => response.json())
             .then((orderData) => {
-                console.log(orderData)
                 const name = orderData.payer.name.given_name;
                 toast.success(`Transaction completed by ${name}`)
             });

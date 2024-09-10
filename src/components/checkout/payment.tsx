@@ -3,7 +3,8 @@
 import { useTicketContext } from "@/context/TicketContext";
 import { useToast } from "@/utils/toast";
 import styled from "@emotion/styled";
-import { Box, Button, Divider, Typography } from "@mui/material";
+import { Box, Button, Divider, TextField, Typography } from "@mui/material";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import PayPalPaymentButton from "./paypal/paypal-button";
@@ -23,6 +24,7 @@ const Payment = (props: IScheduleDetail) => {
     const toast = useToast()
     const router = useRouter();
 
+    const { data: session } = useSession();
 
     const [totalPrice, setTotalPrice] = useState<string | null>(null);
     const [fees, setFees] = useState<string | null>(null);
@@ -30,7 +32,7 @@ const Payment = (props: IScheduleDetail) => {
     const [admissionFees, setAdmissionFees] = useState<string | null>(null);
     const [paypalClientId, setPaypalClientId] = useState<string | null>(null);
 
-
+    const [email, setEmail] = useState<string>();
 
     useEffect(() => {
         // Ensure we're in the browser before accessing sessionStorage
@@ -192,8 +194,35 @@ const Payment = (props: IScheduleDetail) => {
                     amount={totalPrice}
                     selectedSeats={selectedSeats}
                     paypalClientId={paypalClientId}
-                    onSuccess={handleSuccess}
-                    onError={handleError} />
+                // schedule={schedule}
+                // onSuccess={handleSuccess}
+                // onError={handleError}
+                />
+
+                {session ? (
+                    <Box>
+                    </Box>
+                )
+                    : (
+                        <Box>
+                            <Divider sx={{ marginTop: "10px" }} />
+                            <TextField
+                                label="Email Address"
+                                variant="outlined"
+                                fullWidth
+                                sx={{
+                                    marginTop: "40px"
+                                }}
+                                value={email}
+                                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                                    setEmail(event.target.value);
+                                }}
+                            />
+                        </Box>
+                    )
+
+                }
+
                 <ConfirmButton
                     fullWidth
                     sx={{
